@@ -50,9 +50,9 @@ export default {
   'menu.editor.mind': '脑图编辑器',
   'menu.editor.koni': '拓扑编辑器',
 
-  'menu.job': '任务管理',
-  'menu.job.jobDatabase': '数据库管理',
-  'menu.job.jobTask': '任务管理',
+  'menu.monitor': '监控管理',
+  'menu.monitor.monitorDatabase': '数据库管理',
+  'menu.monitor.monitorTask': '任务管理',
   'menu.sys': '系统管理',
   'menu.sys.sysMenu': '菜单管理',
   'menu.sys.sysUser': '用户管理',

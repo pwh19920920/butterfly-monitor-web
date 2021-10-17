@@ -8,18 +8,18 @@ import ProTable from '@ant-design/pro-table';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {
-  jobDatabaseCreate,
-  jobDatabaseQuery,
-  jobDatabaseUpdate,
-} from '@/services/ant-design-pro/job.database';
+  monitorDatabaseCreate,
+  monitorDatabaseQuery,
+  monitorDatabaseUpdate,
+} from '@/services/ant-design-pro/monitor.database';
 import { ModalForm } from '@ant-design/pro-form';
-import CreateOrUpdateForm from '@/pages/JobDatabase/components/UpdateForm';
+import CreateOrUpdateForm from '@/pages/MonitorDatabase/components/UpdateForm';
 import { DatabaseTypeEnum } from '@/services/ant-design-pro/enum';
 
-const handleCreate = async (fields: API.JobDatabase) => {
+const handleCreate = async (fields: API.MonitorDatabase) => {
   const hide = message.loading('正在添加');
   try {
-    await jobDatabaseCreate({ ...fields });
+    await monitorDatabaseCreate({ ...fields });
     hide();
     message.success('保存数据库源成功');
     return true;
@@ -35,10 +35,10 @@ const handleCreate = async (fields: API.JobDatabase) => {
  * @zh-CN 添加节点
  * @param fields
  */
-const handleUpdate = async (fields: API.JobDatabase) => {
+const handleUpdate = async (fields: API.MonitorDatabase) => {
   const hide = message.loading('正在添加');
   try {
-    await jobDatabaseUpdate({ ...fields });
+    await monitorDatabaseUpdate({ ...fields });
     hide();
     message.success('更新数据库源成功');
     return true;
@@ -60,9 +60,9 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<API.JobDatabase>();
+  const [currentRow, setCurrentRow] = useState<API.MonitorDatabase>();
 
-  const columns: ProColumns<API.JobDatabase>[] = [
+  const columns: ProColumns<API.MonitorDatabase>[] = [
     {
       title: '名称',
       dataIndex: 'name',
@@ -102,6 +102,7 @@ const TableList: React.FC = () => {
     {
       title: '密码',
       dataIndex: 'password',
+      valueType: 'password',
       hideInSearch: true,
     },
     {
@@ -124,7 +125,7 @@ const TableList: React.FC = () => {
 
   return (
     <PageContainer>
-      <ProTable<API.JobDatabase, API.PageParams>
+      <ProTable<API.MonitorDatabase, API.PageParams>
         headerTitle="查询表格"
         actionRef={actionRef}
         rowKey="id"
@@ -139,7 +140,7 @@ const TableList: React.FC = () => {
             <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
           </Button>,
         ]}
-        request={jobDatabaseQuery}
+        request={monitorDatabaseQuery}
         columns={columns}
         rowSelection={
           {
@@ -161,7 +162,7 @@ const TableList: React.FC = () => {
         closable={false}
       >
         {currentRow?.name && (
-          <ProDescriptions<API.JobDatabase>
+          <ProDescriptions<API.MonitorDatabase>
             column={2}
             title={currentRow?.name}
             request={async () => ({
@@ -170,7 +171,7 @@ const TableList: React.FC = () => {
             params={{
               id: currentRow?.name,
             }}
-            columns={columns as ProDescriptionsItemProps<API.JobDatabase>[]}
+            columns={columns as ProDescriptionsItemProps<API.MonitorDatabase>[]}
           />
         )}
       </Drawer>
@@ -180,7 +181,7 @@ const TableList: React.FC = () => {
         width="740px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
-        onFinish={async (value: API.JobDatabase) => {
+        onFinish={async (value: API.MonitorDatabase) => {
           value.type = Number(value.type);
           const success = await handleCreate({ ...value });
           if (success) {
@@ -201,7 +202,7 @@ const TableList: React.FC = () => {
           initialValues={currentRow}
           visible={modifyModalVisible}
           onVisibleChange={handleModifyModalVisible}
-          onFinish={async (value: API.JobDatabase) => {
+          onFinish={async (value: API.MonitorDatabase) => {
             value.type = Number(value.type);
             const success = await handleUpdate({ ...currentRow, ...value });
             if (success) {

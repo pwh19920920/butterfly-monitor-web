@@ -65,7 +65,7 @@ declare namespace API {
     success?: boolean;
   };
 
-  type JobDatabase = {
+  type MonitorDatabase = {
     id?: number;
     database?: string;
     name?: string;

@@ -25,16 +25,16 @@
     component: './Welcome',
   },
   {
-    path: '/job',
-    name: 'job',
+    path: '/monitor',
+    name: 'monitor',
     icon: 'smile',
     access: 'routeAccess',
     routes: [
       {
-        name: 'jobDatabase',
+        name: 'monitorDatabase',
         access: 'routeAccess',
-        path: '/job/database',
-        component: './JobDatabase/index',
+        path: '/monitor/database',
+        component: './MonitorDatabase/index',
       },
     ],
   },
