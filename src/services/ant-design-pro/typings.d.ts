@@ -109,6 +109,7 @@ declare namespace API {
     option: string;
     independent: boolean;
     half: boolean;
+    root: boolean;
   }
 
   interface SysRolePermission extends SysPermission {

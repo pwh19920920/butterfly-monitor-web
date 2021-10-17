@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Col, Form, Modal, Row, Spin, Tree } from 'antd';
-import { ProFormText } from '@ant-design/pro-form';
-import { sysRolePermissionQuery } from '@/services/ant-design-pro/sys.role';
-import { sysMenuQueryWithOption } from '@/services/ant-design-pro/sys.menu';
-import { LoadingOutlined } from '@ant-design/icons';
-import type { DataNode } from 'antd/lib/tree';
-import type { EventDataNode, Key } from 'rc-tree/lib/interface';
+import React, {useEffect, useState} from 'react';
+import {Col, Form, Modal, Row, Spin, Tree} from 'antd';
+import {ProFormText} from '@ant-design/pro-form';
+import {sysRolePermissionQuery} from '@/services/ant-design-pro/sys.role';
+import {sysMenuQueryWithOption} from '@/services/ant-design-pro/sys.menu';
+import {LoadingOutlined} from '@ant-design/icons';
+import type {DataNode} from 'antd/lib/tree';
+import type {EventDataNode, Key} from 'rc-tree/lib/interface';
 
 export type CreateOrUpdateFormProps = {
   initValues?: API.SysRole;
@@ -21,8 +21,10 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
   const [treeData, setTreeData] = useState<DataNode[]>([]);
   const [selectPermission, setSelectPermission] = useState<API.SysPermission[]>([]);
+  const [roots, setRoots] = useState<string[]>([]);
 
   const [form] = Form.useForm();
+  const hasOptionMenus: string[] = [];
 
   const onCheck = (
     checkedKeysValue: string[],
@@ -39,6 +41,8 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
       halfCheckedKeys?: Key[];
     },
   ) => {
+    console.log(info);
+
     setCheckedKeys(checkedKeysValue);
 
     const permission: API.SysPermission[] = [];
@@ -53,6 +57,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
           roleId: props.initValues?.id,
           independent: true,
           half: false,
+          root: roots.includes(String(value.key)),
         });
       } else {
         let menuOps = permissionMap.get(menuId);
@@ -70,6 +75,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         roleId: props.initValues?.id,
         independent: false,
         half: false,
+        root: roots.includes(key),
       });
     });
 
@@ -81,6 +87,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         roleId: props.initValues?.id,
         independent: true,
         half: true,
+        root: roots.includes(String(value))
       });
     });
     setSelectPermission(permission);
@@ -95,14 +102,14 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
     const permission: API.SysPermission[] = [];
     const result: string[] = [];
     resp.data.forEach((item: API.SysRolePermission) => {
-      permission.push({ ...item });
+      permission.push({...item});
       if (!item.half && !item.independent) {
         item.options.forEach((op) => {
           result.push(op);
         });
       }
 
-      if (item.independent && !item.half) {
+      if (item.independent && !item.half && !item.root && !hasOptionMenus.includes(`${item.menuId}`)) {
         result.push(`${item.menuId}`);
       }
     });
@@ -110,14 +117,21 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
     setCheckedKeys(result);
   };
 
-  const reloadTreeData = async () => {
+  const reloadTreeData = async (): Promise<string[]> => {
     const resp = await sysMenuQueryWithOption();
-    setTreeData(recursionAssignment([...resp.data]));
+    if (resp.data) {
+      const rootIds = resp.data.map((item: API.SysMenu) => `${item.id}`);
+      setRoots(rootIds);
+
+      setTreeData(recursionAssignment([...resp.data]));
+      return hasOptionMenus;
+    }
+    return [];
   };
 
   function recursionAssignmentOption(menu: API.SysMenu, options: API.SysMenuOption[]): DataNode[] {
     return options.map((item) => {
-      return { key: `${item.id}`, title: item.name, menuId: menu.id };
+      return {key: `${item.id}`, title: item.name, menuId: menu.id};
     });
   }
 
@@ -134,21 +148,22 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
       }
 
       if (item.options) {
+        hasOptionMenus.push(`${item.id}`);
         const result = recursionAssignmentOption(item, item.options);
         children.push(...result);
       }
-      return { key: item.id, title: item.name, children };
+      return {key: item.id, title: item.name, children};
     });
   }
 
   useEffect(() => {
-    // 加载已选择的权限
-    if (props.initValues) {
-      reloadPermission(props.initValues?.id).then(() => {});
-    }
-
     // 加载菜单
-    reloadTreeData().then(() => {});
+    reloadTreeData().then(() => {
+      // 加载已选择的权限
+      if (props.initValues) {
+        reloadPermission(props.initValues?.id).then(() => {});
+      }
+    });
   }, [props.initValues]);
 
   return (
@@ -169,7 +184,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props) => {
         }}
       >
         {treeData.length == 0 ? (
-          <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
+          <Spin indicator={<LoadingOutlined style={{fontSize: 24}} spin/>}/>
         ) : (
           <Form form={form} initialValues={props.initValues}>
             <Row gutter={24}>
