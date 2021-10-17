@@ -65,16 +65,6 @@ declare namespace API {
     success?: boolean;
   };
 
-  type MonitorDatabase = {
-    id?: number;
-    database?: string;
-    name?: string;
-    username?: string;
-    password?: string;
-    url: string;
-    type: number;
-  };
-
   type SysMenuOption = {
     id: number;
     name: string;
@@ -115,4 +105,30 @@ declare namespace API {
   interface SysRolePermission extends SysPermission {
     options: string[];
   }
+
+  type MonitorDatabase = {
+    id?: number;
+    database?: string;
+    name: string;
+    username?: string;
+    password?: string;
+    url: string;
+    type: number;
+  };
+
+  type MonitorTask = {
+    id: string;
+    preExecuteTime?: string;
+    taskKey: string;
+    taskName: string;
+    timeSpace: number;
+    command: string;
+    taskType: number;
+    execParams: string;
+    taskStatus?: number;
+    alertStatus?: number;
+    taskExecParams: {
+      databaseId: string;
+    };
+  };
 }

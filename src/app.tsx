@@ -90,7 +90,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         ]
       : [],
     menuHeaderRender: undefined,
-    menuDataRender: (menuData) => {
+    menuDataRender: (menuData: any[]) => {
       return menuData.map((item) => {
         if (typeof item.icon == 'string') {
           return {
@@ -107,7 +107,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     menu: {
       // 每当 initialState?.currentUser?.userid 发生修改时重新执行 request
       params: initialState,
-      request: async (_, defaultMenuData) => {
+      request: async (_: any, defaultMenuData: any) => {
         return initialState?.currentUser?.menus || defaultMenuData;
       },
     },

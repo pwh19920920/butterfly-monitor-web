@@ -36,6 +36,12 @@
         path: '/monitor/database',
         component: './MonitorDatabase/index',
       },
+      {
+        name: 'monitorTask',
+        access: 'routeAccess',
+        path: '/monitor/task',
+        component: './MonitorTask/index',
+      },
     ],
   },
   {

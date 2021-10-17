@@ -10,7 +10,7 @@ import { EditableProTable } from '@ant-design/pro-table';
 const columns: ProColumns<API.SysMenuOption>[] = [
   {
     title: '操作名称',
-    width: '120px',
+    width: '140px',
     dataIndex: 'name',
   },
   {

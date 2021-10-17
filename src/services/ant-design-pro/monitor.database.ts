@@ -11,6 +11,13 @@ export async function monitorDatabaseQuery(params: API.PageParams, options?: Rec
   });
 }
 
+/** 获取列表 GET /api/monitor/database/all */
+export async function monitorDatabaseQueryAll() {
+  return request<API.Resp<API.MonitorDatabase[]>>('/api/monitor/database/all', {
+    method: 'GET',
+  });
+}
+
 /** 创建列表 POST /api/monitor/database */
 export async function monitorDatabaseCreate(data: API.MonitorDatabase) {
   return request<API.Resp<string>>('/api/monitor/database', {

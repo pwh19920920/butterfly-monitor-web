@@ -223,7 +223,7 @@ const TableList: React.FC = () => {
 
       <ModalForm
         title="创建菜单"
-        width="740px"
+        width="850px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value: API.SysMenu) => {
@@ -242,7 +242,7 @@ const TableList: React.FC = () => {
       {modifyModalVisible && currentRow ? (
         <ModalForm
           title={'更新数据源'}
-          width="800px"
+          width="850px"
           initialValues={currentRow}
           visible={modifyModalVisible}
           onVisibleChange={handleModifyModalVisible}
