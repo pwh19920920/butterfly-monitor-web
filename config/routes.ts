@@ -42,6 +42,12 @@
         path: '/monitor/task',
         component: './MonitorTask/index',
       },
+      {
+        name: 'monitorDashboard',
+        access: 'routeAccess',
+        path: '/monitor/dashboard',
+        component: './MonitorDashboard/index',
+      }
     ],
   },
   {

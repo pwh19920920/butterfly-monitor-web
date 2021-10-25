@@ -53,6 +53,7 @@ export default {
   'menu.monitor': '监控管理',
   'menu.monitor.monitorDatabase': '数据库管理',
   'menu.monitor.monitorTask': '任务管理',
+  'menu.monitor.monitorDashboard': '面板管理',
   'menu.sys': '系统管理',
   'menu.sys.sysMenu': '菜单管理',
   'menu.sys.sysUser': '用户管理',

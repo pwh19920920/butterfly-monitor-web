@@ -131,4 +131,12 @@ declare namespace API {
       databaseId: string;
     };
   };
+
+  type MonitorDashboard = {
+    id: string;
+    name: string;
+    slug?: string;
+    url?: string;
+    uid?: string;
+  }
 }

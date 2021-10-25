@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import ProForm, {
   ProFormDigit,
   ProFormSelect,
   ProFormText,
   ProFormTextArea,
 } from '@ant-design/pro-form';
-import { TaskTypeEnum } from '@/services/ant-design-pro/enum';
-import { Spin } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
-import { monitorDatabaseQueryAll } from '@/services/ant-design-pro/monitor.database';
+import {TaskTypeEnum} from '@/services/ant-design-pro/enum';
+import {Spin} from 'antd';
+import {LoadingOutlined} from '@ant-design/icons';
+import {monitorDatabaseQueryAll} from '@/services/ant-design-pro/monitor.database';
 
 const taskTypes = Object.keys(TaskTypeEnum).map((item) => {
   return {
@@ -35,18 +35,19 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
     if (resp.data) {
       setDatabases(
         resp.data.map((item: API.MonitorDatabase): MonitorDatabaseItem => {
-          return { label: item.name, value: `${item.id}` };
+          return {label: item.name, value: `${item.id}`};
         }),
       );
     }
   };
 
   useEffect(() => {
-    reloadData().then(() => {});
+    reloadData().then(() => {
+    });
   }, []);
 
   if (databases.length == 0) {
-    return <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />;
+    return <Spin indicator={<LoadingOutlined style={{fontSize: 24}} spin/>}/>;
   }
 
   return (
@@ -96,7 +97,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           ]}
           min={30}
           width="md"
-          fieldProps={{ step: 30 }}
+          fieldProps={{step: 30}}
           placeholder="请输入任务执行周期, 30s为周期"
           name="timeSpan"
         />
@@ -136,6 +137,20 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           name={['taskExecParams', 'databaseId']}
           placeholder="请选择数据库"
           label="数据库"
+        />
+      )}
+
+      {selectTaskType == 1 && (
+        <ProFormText
+          label="提取字段"
+          rules={[
+            {
+              required: true,
+              message: '提取字段不能为空',
+            },
+          ]}
+          placeholder="结果字段, 支持复杂参数, 对象.属性"
+          name={['taskExecParams', "resultFieldPath"]}
         />
       )}
 

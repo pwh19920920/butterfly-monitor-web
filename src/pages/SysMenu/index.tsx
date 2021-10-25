@@ -221,7 +221,7 @@ const TableList: React.FC = () => {
         )}
       </Drawer>
 
-      <ModalForm
+      {createModalVisible && <ModalForm
         title="创建菜单"
         width="850px"
         visible={createModalVisible}
@@ -237,7 +237,7 @@ const TableList: React.FC = () => {
         }}
       >
         <CreateOrUpdateForm initOptionsValues={[]} />
-      </ModalForm>
+      </ModalForm>}
 
       {modifyModalVisible && currentRow ? (
         <ModalForm
