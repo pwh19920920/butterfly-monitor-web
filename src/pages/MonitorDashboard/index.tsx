@@ -20,11 +20,11 @@ const handleCreate = async (fields: API.MonitorDashboard) => {
   try {
     await monitorDashboardCreate({ ...fields });
     hide();
-    message.success('保存数据库源成功');
+    message.success('保存面板成功');
     return true;
   } catch (error) {
     hide();
-    message.error('保存数据库源失败!');
+    message.error('保存面板失败!');
     return false;
   }
 };
@@ -39,11 +39,11 @@ const handleUpdate = async (fields: API.MonitorDashboard) => {
   try {
     await monitorDashboardUpdate({ ...fields });
     hide();
-    message.success('更新数据库源成功');
+    message.success('更新面板成功');
     return true;
   } catch (error) {
     hide();
-    message.error('更新数据库源失败!');
+    message.error('更新面板失败!');
     return false;
   }
 };
@@ -164,7 +164,7 @@ const TableList: React.FC = () => {
 
       <ModalForm
         title="创建Dashboard"
-        width="740px"
+        width="340px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value: API.MonitorDashboard) => {
@@ -183,7 +183,7 @@ const TableList: React.FC = () => {
       {modifyModalVisible && currentRow ? (
         <ModalForm
           title={'更新Dashboard'}
-          width="740px"
+          width="340px"
           initialValues={currentRow}
           visible={modifyModalVisible}
           onVisibleChange={handleModifyModalVisible}

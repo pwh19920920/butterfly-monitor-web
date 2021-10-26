@@ -1,18 +1,19 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Drawer, message } from 'antd';
-import React, { useRef, useState } from 'react';
-import { FormattedMessage } from 'umi';
-import { PageContainer } from '@ant-design/pro-layout';
-import type { ActionType, ProColumns } from '@ant-design/pro-table';
+import {PlusOutlined} from '@ant-design/icons';
+import {Button, Drawer, message} from 'antd';
+import React, {useRef, useState} from 'react';
+import {FormattedMessage} from 'umi';
+import {PageContainer} from '@ant-design/pro-layout';
+import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
+import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { ModalForm } from '@ant-design/pro-form';
+import {ModalForm} from '@ant-design/pro-form';
 import CreateOrUpdateForm from '@/pages/MonitorTask/components/UpdateForm';
-import { TaskAlertStatusEnum, TaskStatusEnum, TaskTypeEnum } from '@/services/ant-design-pro/enum';
+import {TaskTypeEnum} from '@/services/ant-design-pro/enum';
 import {
   monitorTaskCreate,
   monitorTaskModifyAlertStatus,
+  monitorTaskModifySampled,
   monitorTaskModifyTaskStatus,
   monitorTaskQuery,
   monitorTaskUpdate,
@@ -21,7 +22,7 @@ import {
 const handleCreate = async (fields: API.MonitorTask) => {
   const hide = message.loading('正在添加');
   try {
-    await monitorTaskCreate({ ...fields });
+    await monitorTaskCreate({...fields});
     hide();
     message.success('保存任务成功');
     return true;
@@ -40,7 +41,7 @@ const handleCreate = async (fields: API.MonitorTask) => {
 const handleUpdate = async (fields: API.MonitorTask) => {
   const hide = message.loading('正在添加');
   try {
-    await monitorTaskUpdate({ ...fields });
+    await monitorTaskUpdate({...fields});
     hide();
     message.success('更新任务成功');
     return true;
@@ -75,6 +76,20 @@ const handleModifyTaskStatus = async (id: string, status: number) => {
   } catch (error) {
     hide();
     message.error('更新任务失败!');
+    return false;
+  }
+};
+
+const handleModifySampled = async (id: string, status: number) => {
+  const hide = message.loading('正在修改');
+  try {
+    await monitorTaskModifySampled(id, status);
+    hide();
+    message.success('更新收集状态成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('更新收集状态失败!');
     return false;
   }
 };
@@ -117,16 +132,6 @@ const TableList: React.FC = () => {
       title: '任务类型',
       dataIndex: 'taskType',
       valueEnum: TaskTypeEnum,
-    },
-    {
-      title: '任务状态',
-      dataIndex: 'taskStatus',
-      valueEnum: TaskStatusEnum,
-    },
-    {
-      title: '报警状态',
-      dataIndex: 'alertStatus',
-      valueEnum: TaskAlertStatusEnum,
     },
     {
       title: '操作',
@@ -172,6 +177,21 @@ const TableList: React.FC = () => {
         >
           {record.taskStatus === 0 ? '开启' : '关闭'}任务
         </a>,
+
+        <a
+          key="sampled"
+          onClick={async () => {
+            const success = await handleModifySampled(
+              record.id,
+              record.sampled === 0 ? 1 : 0,
+            );
+            if (success && actionRef.current) {
+              actionRef.current.reload();
+            }
+          }}
+        >
+          {record.sampled === 0 ? '开启' : '关闭'}样本收集
+        </a>
       ],
     },
   ];
@@ -190,7 +210,7 @@ const TableList: React.FC = () => {
               handleModalVisible(true);
             }}
           >
-            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
+            <PlusOutlined/> <FormattedMessage id="pages.searchTable.new" defaultMessage="New"/>
           </Button>,
         ]}
         request={monitorTaskQuery}
@@ -236,7 +256,7 @@ const TableList: React.FC = () => {
           visible={createModalVisible}
           onVisibleChange={handleModalVisible}
           onFinish={async (value: API.MonitorTask) => {
-            const success = await handleCreate({ ...value });
+            const success = await handleCreate({...value});
             if (success) {
               handleModalVisible(false);
               if (actionRef.current) {
@@ -245,7 +265,7 @@ const TableList: React.FC = () => {
             }
           }}
         >
-          <CreateOrUpdateForm taskType={-1} />
+          <CreateOrUpdateForm taskType={-1}/>
         </ModalForm>
       )}
 
@@ -257,7 +277,7 @@ const TableList: React.FC = () => {
           visible={modifyModalVisible}
           onVisibleChange={handleModifyModalVisible}
           onFinish={async (value: API.MonitorTask) => {
-            const success = await handleUpdate({ ...currentRow, ...value });
+            const success = await handleUpdate({...currentRow, ...value});
             if (success) {
               handleModifyModalVisible(false);
               if (actionRef.current) {
@@ -266,7 +286,7 @@ const TableList: React.FC = () => {
             }
           }}
         >
-          <CreateOrUpdateForm taskType={currentRow.taskType} />
+          <CreateOrUpdateForm taskType={currentRow.taskType}/>
         </ModalForm>
       ) : (
         <></>

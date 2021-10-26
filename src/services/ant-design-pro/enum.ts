@@ -17,4 +17,9 @@ const TaskAlertStatusEnum = {
   1: '开启',
 };
 
-export { DatabaseTypeEnum, TaskTypeEnum, TaskStatusEnum, TaskAlertStatusEnum };
+const TaskSampledEnum = {
+  0: '关闭',
+  1: '开启',
+};
+
+export {DatabaseTypeEnum, TaskTypeEnum, TaskStatusEnum, TaskAlertStatusEnum, TaskSampledEnum};

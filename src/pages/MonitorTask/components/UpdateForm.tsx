@@ -1,14 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import ProForm, {
-  ProFormDigit,
-  ProFormSelect,
-  ProFormText,
-  ProFormTextArea,
-} from '@ant-design/pro-form';
+import ProForm, {ProFormDigit, ProFormSelect, ProFormText, ProFormTextArea,} from '@ant-design/pro-form';
 import {TaskTypeEnum} from '@/services/ant-design-pro/enum';
-import {Spin} from 'antd';
+import {Modal, Spin} from 'antd';
 import {LoadingOutlined} from '@ant-design/icons';
 import {monitorDatabaseQueryAll} from '@/services/ant-design-pro/monitor.database';
+import {monitorDashboardQueryAll} from "@/services/ant-design-pro/monitor.dashboard";
 
 const taskTypes = Object.keys(TaskTypeEnum).map((item) => {
   return {
@@ -27,26 +23,58 @@ type CreateOrUpdateFormProps = {
 };
 
 const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUpdateFormProps) => {
+  const isCreateView = props.taskType === -1;
   const [selectTaskType, setSelectTaskType] = useState<number>(props.taskType);
   const [databases, setDatabases] = useState<MonitorDatabaseItem[]>([]);
+  const [dashboards, setDashboards] = useState<MonitorDatabaseItem[]>([]);
 
   const reloadData = async () => {
     const resp: API.Resp<API.MonitorDatabase[]> = await monitorDatabaseQueryAll();
-    if (resp.data) {
-      setDatabases(
-        resp.data.map((item: API.MonitorDatabase): MonitorDatabaseItem => {
-          return {label: item.name, value: `${item.id}`};
-        }),
-      );
+    if (resp.data && resp.data.length > 0) {
+      return Promise.resolve(resp.data.map((item: API.MonitorDatabase): MonitorDatabaseItem => {
+        return {label: item.name, value: `${item.id}`};
+      }));
     }
+    return Promise.reject();
   };
 
+  const loadDashboard = async () => {
+    const resp = await monitorDashboardQueryAll()
+    if (resp.data && resp.data.length > 0) {
+      return Promise.resolve(resp.data.map((item): MonitorDatabaseItem => {
+        return {label: item.name, value: `${item.id}`};
+      }));
+    }
+    return Promise.reject();
+  }
+
   useEffect(() => {
-    reloadData().then(() => {
+    // 数据源
+    reloadData().then((resp) => {
+      setDatabases(resp);
+    }).catch(() => {
+
+    });
+
+    // grafana面板
+    loadDashboard().then((resp) => {
+      setDashboards(resp);
+    }).catch(() => {
+      Modal.info({
+        title: '操作提示',
+        content: (
+          <div>
+            <p>当前还没有添加任何面板, 请先添加面板再进行添加任务</p>
+          </div>
+        ),
+        onOk() {
+          location.href = "/monitor/dashboard"
+        },
+      });
     });
   }, []);
 
-  if (databases.length == 0) {
+  if (dashboards.length == 0) {
     return <Spin indicator={<LoadingOutlined style={{fontSize: 24}} spin/>}/>;
   }
 
@@ -74,6 +102,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
               message: '任务key不能为空',
             },
           ]}
+          disabled={!isCreateView}
           width="md"
           placeholder="请输入任务key"
           name="taskKey"
@@ -113,46 +142,76 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           width="md"
           fieldProps={{
             onChange: (value: number) => {
+              // 选择数据库需要判断一下有没有数据源头
+              if (value == 0 && databases.length == 0) {
+                Modal.info({
+                  title: '操作提示',
+                  content: (
+                    <div>
+                      <p>当前还没有添加任何数据源, 请先添加数据源再进行添加任务</p>
+                    </div>
+                  ),
+                  onOk() {
+                    location.href = "/monitor/database"
+                  }
+                });
+              }
+
               setSelectTaskType(value);
             },
           }}
           name="taskType"
           label="任务类型"
         />
-      </ProForm.Group>
 
-      {selectTaskType == 0 && (
         <ProFormSelect
-          options={databases}
+          options={dashboards}
           rules={[
             {
               required: true,
-              message: '数据库不能为空',
+              message: '归属面板不能为空',
             },
           ]}
+          mode="multiple"
           width="md"
-          fieldProps={{
-            showSearch: true,
-          }}
-          name={['taskExecParams', 'databaseId']}
-          placeholder="请选择数据库"
-          label="数据库"
+          name="dashboards"
+          label="归属面板"
         />
-      )}
 
-      {selectTaskType == 1 && (
-        <ProFormText
-          label="提取字段"
-          rules={[
-            {
-              required: true,
-              message: '提取字段不能为空',
-            },
-          ]}
-          placeholder="结果字段, 支持复杂参数, 对象.属性"
-          name={['taskExecParams', "resultFieldPath"]}
-        />
-      )}
+        {selectTaskType == 0 && (
+          <ProFormSelect
+            options={databases}
+            rules={[
+              {
+                required: true,
+                message: '数据库不能为空',
+              },
+            ]}
+            width="md"
+            fieldProps={{
+              showSearch: true,
+            }}
+            name={['taskExecParams', 'databaseId']}
+            placeholder="请选择数据库"
+            label="数据库"
+          />
+        )}
+
+        {selectTaskType == 1 && (
+          <ProFormText
+            label="提取字段"
+            rules={[
+              {
+                required: true,
+                message: '提取字段不能为空',
+              },
+            ]}
+            width="md"
+            placeholder="结果字段, 支持复杂参数, 对象.属性"
+            name={['taskExecParams', "resultFieldPath"]}
+          />
+        )}
+      </ProForm.Group>
 
       <ProFormTextArea
         label="执行指令"

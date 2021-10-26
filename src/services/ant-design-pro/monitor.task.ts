@@ -33,6 +33,12 @@ export async function monitorTaskModifyAlertStatus(id: string, status: number) {
   });
 }
 
+export async function monitorTaskModifySampled(id: string, status: number) {
+  return request<API.Resp<string>>(`/api/monitor/task/sampled/${id}/${status}`, {
+    method: 'PUT',
+  });
+}
+
 export async function monitorTaskModifyTaskStatus(id: string, status: number) {
   return request<API.Resp<string>>(`/api/monitor/task/taskStatus/${id}/${status}`, {
     method: 'PUT',
