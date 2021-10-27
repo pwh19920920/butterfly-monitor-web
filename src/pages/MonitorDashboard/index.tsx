@@ -11,9 +11,10 @@ import {ModalForm} from '@ant-design/pro-form';
 import CreateOrUpdateForm from '@/pages/MonitorDashboard/components/UpdateForm';
 import {
   monitorDashboardCreate,
-  monitorDashboardQuery,
+  monitorDashboardQuery, monitorDashboardTaskSort,
   monitorDashboardUpdate
 } from "@/services/ant-design-pro/monitor.dashboard";
+import SortForm from "@/pages/MonitorDashboard/components/SortForm";
 
 const handleCreate = async (fields: API.MonitorDashboard) => {
   const hide = message.loading('正在添加');
@@ -48,6 +49,20 @@ const handleUpdate = async (fields: API.MonitorDashboard) => {
   }
 };
 
+const handleTaskSortUpdate = async (fields: API.MonitorDashboardTask[]) => {
+  const hide = message.loading('正在更新排序，请稍后');
+  try {
+    await monitorDashboardTaskSort(fields);
+    hide();
+    message.success('更新面板成功');
+    return true;
+  } catch (error) {
+    hide();
+    message.error('更新面板失败!');
+    return false;
+  }
+};
+
 const TableList: React.FC = () => {
   /**
    * @en-US Pop-up window of new window
@@ -55,6 +70,7 @@ const TableList: React.FC = () => {
    *  */
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const [modifyModalVisible, handleModifyModalVisible] = useState<boolean>(false);
+  const [sorterModalVisible, handleSorterModifyModalVisible] = useState<boolean>(false);
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
 
@@ -85,6 +101,9 @@ const TableList: React.FC = () => {
     {
       title: '地址',
       dataIndex: 'url',
+      render: (_, record) => {
+        return <a href={record.url} target="_blank">{record.url}</a>
+      }
     },
     {
       title: 'uid',
@@ -98,11 +117,20 @@ const TableList: React.FC = () => {
         <a
           key="config"
           onClick={() => {
-            handleModifyModalVisible(true);
             setCurrentRow(record);
+            handleModifyModalVisible(true);
           }}
         >
           修改
+        </a>,
+        <a
+          key="sort"
+          onClick={() => {
+            setCurrentRow(record);
+            handleSorterModifyModalVisible(true);
+          }}
+        >
+          排序
         </a>,
       ],
     },
@@ -161,6 +189,20 @@ const TableList: React.FC = () => {
           />
         )}
       </Drawer>
+
+      {sorterModalVisible && currentRow && <SortForm
+        visible={sorterModalVisible}
+        initValues={currentRow}
+        onSubmit={async (dashboardTasks) => {
+          const tasks = dashboardTasks.map((item, index) => {
+            return  {...item, sort: 999 - index};
+          });
+          await handleTaskSortUpdate(tasks);
+          handleSorterModifyModalVisible(false);
+        }}
+        width="720px"
+        title="面板排序"
+        onVisibleChange={handleSorterModifyModalVisible}/>}
 
       <ModalForm
         title="创建Dashboard"

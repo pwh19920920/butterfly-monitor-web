@@ -18,6 +18,13 @@ export async function monitorDashboardQueryAll() {
   });
 }
 
+/** 获取列表 GET /api/monitor/dashboard/task/:id */
+export async function monitorDashboardTasksById(dashboardId: string | number) {
+  return request<API.Resp<API.MonitorDashboardTask[]>>(`/api/monitor/dashboard/task/${dashboardId}`, {
+    method: 'GET',
+  });
+}
+
 /** 创建列表 POST /api/monitor/dashboard */
 export async function monitorDashboardCreate(data: API.MonitorDashboard) {
   return request<API.Resp<string>>('/api/monitor/dashboard', {
@@ -33,3 +40,12 @@ export async function monitorDashboardUpdate(data: API.MonitorDashboard) {
     data: { ...data } || {},
   });
 }
+
+/** 创建列表 PUT /api/monitor/dashboard/taskSort */
+export async function monitorDashboardTaskSort(data: API.MonitorDashboardTask[]) {
+  return request<API.Resp<string>>('/api/monitor/dashboard/taskSort', {
+    method: 'PUT',
+    data: { data: data } || {},
+  });
+}
+

@@ -141,4 +141,13 @@ declare namespace API {
     url?: string;
     uid?: string;
   }
+
+  type MonitorDashboardTask = {
+    id: string;
+    dashboardId: string;
+    taskId: string;
+    taskName: string;
+    taskKey: string;
+    sort: number;
+  }
 }
