@@ -172,7 +172,7 @@ const errorHandler = (error: ResponseError) => {
 
     // 已经退出
     if (response.status === 401) {
-      location.href = loginPath;
+      history.push(loginPath);
       localStorage.clear();
     }
   } else if (data) {
