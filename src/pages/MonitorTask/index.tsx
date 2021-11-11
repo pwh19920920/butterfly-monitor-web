@@ -136,10 +136,12 @@ const TableList: React.FC = () => {
     {
       title: '上一次执行时间',
       dataIndex: 'preExecuteTime',
+      hideInSearch: true,
     },
     {
       title: '错误原因',
       dataIndex: 'errMsg',
+      hideInSearch: true,
     },
     {
       title: '操作',
