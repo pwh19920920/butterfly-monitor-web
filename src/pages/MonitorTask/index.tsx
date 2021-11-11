@@ -134,6 +134,14 @@ const TableList: React.FC = () => {
       valueEnum: TaskTypeEnum,
     },
     {
+      title: '上一次执行时间',
+      dataIndex: 'preExecuteTime',
+    },
+    {
+      title: '错误原因',
+      dataIndex: 'errMsg',
+    },
+    {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
