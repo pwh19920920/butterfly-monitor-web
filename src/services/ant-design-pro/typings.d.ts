@@ -129,6 +129,8 @@ declare namespace API {
     alertStatus?: number;
     dashboards: string[];
     sampled: number;
+    collectErrMsg?: string;
+    sampleErrMsg?: string;
     taskExecParams: {
       databaseId: string;
     };

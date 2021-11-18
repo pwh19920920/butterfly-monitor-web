@@ -140,7 +140,7 @@ const TableList: React.FC = () => {
     },
     {
       title: '错误原因',
-      dataIndex: 'errMsg',
+      dataIndex: 'collectErrMsg',
       hideInSearch: true,
     },
     {
