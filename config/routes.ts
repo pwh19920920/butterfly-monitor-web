@@ -47,6 +47,12 @@
         access: 'routeAccess',
         path: '/monitor/dashboard',
         component: './MonitorDashboard/index',
+      },
+      {
+        name: 'alertConf',
+        access: 'routeAccess',
+        path: '/monitor/alertConf',
+          component: './AlertConf/index',
       }
     ],
   },

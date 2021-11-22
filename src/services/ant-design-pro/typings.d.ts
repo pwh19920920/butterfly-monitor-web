@@ -152,4 +152,12 @@ declare namespace API {
     taskKey: string;
     sort: number;
   }
+
+  type AlertConf = {
+    id: string;
+    confKey: string;
+    confVal: string;
+    confDesc: string;
+    confType: number;
+  }
 }

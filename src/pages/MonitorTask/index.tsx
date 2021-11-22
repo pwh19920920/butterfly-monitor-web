@@ -200,7 +200,7 @@ const TableList: React.FC = () => {
             }
           }}
         >
-          {record.sampled === 0 ? '开启' : '关闭'}样本收集
+          {record.sampled === 0 ? '显示' : '隐藏'}样本
         </a>
       ],
     },

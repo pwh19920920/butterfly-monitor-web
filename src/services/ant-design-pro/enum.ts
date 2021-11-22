@@ -22,4 +22,9 @@ const TaskSampledEnum = {
   1: '开启',
 };
 
-export {DatabaseTypeEnum, TaskTypeEnum, TaskStatusEnum, TaskAlertStatusEnum, TaskSampledEnum};
+const AlertConfTypeEnum = {
+  1: '数字',
+  2: '字符串'
+}
+
+export {AlertConfTypeEnum, DatabaseTypeEnum, TaskTypeEnum, TaskStatusEnum, TaskAlertStatusEnum, TaskSampledEnum};
