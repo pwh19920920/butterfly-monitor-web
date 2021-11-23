@@ -3,8 +3,8 @@ const DatabaseTypeEnum = {
 };
 
 const TaskTypeEnum = {
-  0: 'sql',
-  1: 'http',
+  1: 'sql',
+  2: 'http',
 };
 
 const TaskStatusEnum = {
