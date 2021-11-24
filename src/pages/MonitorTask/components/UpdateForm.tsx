@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import ProForm, {ProFormDigit, ProFormSelect, ProFormText, ProFormTextArea,} from '@ant-design/pro-form';
-import {TaskTypeEnum} from '@/services/ant-design-pro/enum';
+import {TaskRecallStatusEnum, TaskTypeEnum} from '@/services/ant-design-pro/enum';
 import {Modal, Spin} from 'antd';
 import {LoadingOutlined} from '@ant-design/icons';
 import {monitorDatabaseQueryAll} from '@/services/ant-design-pro/monitor.database';
@@ -10,6 +10,13 @@ const taskTypes = Object.keys(TaskTypeEnum).map((item) => {
   return {
     value: Number(item),
     label: TaskTypeEnum[item],
+  };
+});
+
+const recallStatus = Object.keys(TaskRecallStatusEnum).map((item) => {
+  return {
+    value: Number(item),
+    label: TaskRecallStatusEnum[item],
   };
 });
 
@@ -41,7 +48,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
   const loadDashboard = async () => {
     const resp = await monitorDashboardQueryAll()
     if (resp.data && resp.data.length > 0) {
-      return Promise.resolve(resp.data.map((item): MonitorDatabaseItem => {
+      return Promise.resolve(resp.data.map((item: API.MonitorDashboard): MonitorDatabaseItem => {
         return {label: item.name, value: `${item.id}`};
       }));
     }
@@ -132,6 +139,19 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
         />
 
         <ProFormSelect
+          options={recallStatus}
+          rules={[
+            {
+              required: true,
+              message: '回朔支持不能为空',
+            },
+          ]}
+          width="md"
+          name="recallStatus"
+          label="是否支持回朔"
+        />
+
+        <ProFormSelect
           options={taskTypes}
           rules={[
             {
@@ -178,7 +198,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           label="归属面板"
         />
 
-        {selectTaskType == 0 && (
+        {selectTaskType == 1 && (
           <ProFormSelect
             options={databases}
             rules={[
@@ -197,7 +217,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           />
         )}
 
-        {selectTaskType == 1 && (
+        {selectTaskType == 2 && (
           <ProFormText
             label="提取字段"
             rules={[

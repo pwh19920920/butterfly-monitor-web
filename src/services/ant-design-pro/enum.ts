@@ -27,4 +27,10 @@ const AlertConfTypeEnum = {
   2: '字符串'
 }
 
-export {AlertConfTypeEnum, DatabaseTypeEnum, TaskTypeEnum, TaskStatusEnum, TaskAlertStatusEnum, TaskSampledEnum};
+const TaskRecallStatusEnum = {
+  1: '支持',
+  2: '不支持'
+}
+
+
+export {TaskRecallStatusEnum, AlertConfTypeEnum, DatabaseTypeEnum, TaskTypeEnum, TaskStatusEnum, TaskAlertStatusEnum, TaskSampledEnum};

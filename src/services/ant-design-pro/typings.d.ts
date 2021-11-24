@@ -127,6 +127,7 @@ declare namespace API {
     execParams: string;
     taskStatus?: number;
     alertStatus?: number;
+    recallStatus?: number;
     dashboards: string[];
     sampled: number;
     collectErrMsg?: string;

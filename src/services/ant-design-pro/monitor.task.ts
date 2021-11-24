@@ -44,3 +44,10 @@ export async function monitorTaskModifyTaskStatus(id: string, status: number) {
     method: 'PUT',
   });
 }
+
+export async function monitorTaskExecForTimeRange(id: string, data: any) {
+  return request<API.Resp<string>>(`/api/monitor/task/execForTimeRange/${id}`, {
+    method: 'POST',
+    data: { ...data } || {},
+  });
+}
