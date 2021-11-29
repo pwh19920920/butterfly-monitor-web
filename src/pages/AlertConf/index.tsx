@@ -134,7 +134,7 @@ const TableList: React.FC = () => {
         closable={false}
       >
         {currentRow?.confKey && (
-          <ProDescriptions<API.MonitorDashboard>
+          <ProDescriptions<API.AlertConf>
             column={2}
             title={currentRow?.confKey}
             request={async () => ({
@@ -143,7 +143,7 @@ const TableList: React.FC = () => {
             params={{
               id: currentRow?.confKey,
             }}
-            columns={columns as ProDescriptionsItemProps<API.MonitorDashboard>[]}
+            columns={columns as ProDescriptionsItemProps<API.AlertConf>[]}
           />
         )}
       </Drawer>

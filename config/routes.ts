@@ -53,6 +53,12 @@
         access: 'routeAccess',
         path: '/monitor/alertConf',
           component: './AlertConf/index',
+      },
+      {
+        name: 'alertGroup',
+        access: 'routeAccess',
+        path: '/monitor/alertGroup',
+        component: './AlertGroup/index',
       }
     ],
   },

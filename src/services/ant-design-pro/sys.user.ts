@@ -11,6 +11,13 @@ export async function sysUserQuery(params: API.PageParams, options?: Record<stri
   });
 }
 
+/** 获取列表 GET /api/sys/user/all */
+export async function sysUserQueryAll() {
+  return request<API.Resp<API.SysUser[]>>('/api/sys/user/all', {
+    method: 'GET',
+  });
+}
+
 /** 创建 POST /api/sys/user */
 export async function sysUserCreate(data: API.SysUser) {
   return request<API.Resp<string>>('/api/sys/user', {

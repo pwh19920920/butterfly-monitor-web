@@ -97,6 +97,16 @@ const TableList: React.FC = () => {
       dataIndex: 'username',
     },
     {
+      title: '电话',
+      dataIndex: 'mobile',
+      search: false
+    },
+    {
+      title: '邮箱',
+      dataIndex: 'email',
+      search: false
+    },
+    {
       title: '头像',
       dataIndex: 'avatar',
       hideInSearch: true,
@@ -193,7 +203,7 @@ const TableList: React.FC = () => {
 
       <ModalForm
         title="创建用户"
-        width="360px"
+        width="740px"
         visible={createModalVisible}
         onVisibleChange={handleModalVisible}
         onFinish={async (value: API.SysUser) => {
@@ -212,7 +222,7 @@ const TableList: React.FC = () => {
       {modifyModalVisible && currentRow ? (
         <ModalForm
           title={'更新用户'}
-          width="360px"
+          width="740px"
           initialValues={currentRow}
           visible={modifyModalVisible}
           onVisibleChange={handleModifyModalVisible}

@@ -17,6 +17,8 @@ declare namespace API {
     name?: string;
     avatar?: string;
     username?: string;
+    mobile?: string;
+    email?: string;
     roles?: string;
     roleList: string[];
     menus?: SysMenu[];
@@ -160,5 +162,11 @@ declare namespace API {
     confVal: string;
     confDesc: string;
     confType: number;
+  }
+
+  type AlertGroup = {
+    id: string;
+    name: string;
+    groupUsers: string[];
   }
 }
