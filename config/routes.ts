@@ -59,6 +59,12 @@
         access: 'routeAccess',
         path: '/monitor/alertGroup',
         component: './AlertGroup/index',
+      },
+      {
+        name: 'alertChannel',
+        access: 'routeAccess',
+        path: '/monitor/alertChannel',
+        component: './AlertChannel/index',
       }
     ],
   },
@@ -104,12 +110,6 @@
         component: './404',
       },
     ],
-  },
-  {
-    name: 'list.table-list',
-    icon: 'table',
-    path: '/list',
-    component: './TableList',
   },
   {
     path: '/',

@@ -32,5 +32,21 @@ const TaskRecallStatusEnum = {
   2: '不支持'
 }
 
+const AlertChannelTypeEnum = {
+  1: '邮件',
+  2: 'WebHook',
+  3: '短信'
+}
 
-export {TaskRecallStatusEnum, AlertConfTypeEnum, DatabaseTypeEnum, TaskTypeEnum, TaskStatusEnum, TaskAlertStatusEnum, TaskSampledEnum};
+
+const AlertChannelFailRouteEnum = {
+  1: '否',
+  2: '是',
+}
+
+const AlertChannelSSlEnum = {
+  1: '是',
+  2: '否',
+}
+
+export {AlertChannelTypeEnum, AlertChannelSSlEnum, AlertChannelFailRouteEnum, TaskRecallStatusEnum, AlertConfTypeEnum, DatabaseTypeEnum, TaskTypeEnum, TaskStatusEnum, TaskAlertStatusEnum, TaskSampledEnum};

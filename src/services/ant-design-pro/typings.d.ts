@@ -169,4 +169,19 @@ declare namespace API {
     name: string;
     groupUsers: string[];
   }
+
+  type AlertChannel = {
+    id: string;
+    name: string;
+    type: number;
+    params: string;
+    paramsObj: any;
+    handler: string;
+    failRoute: number;
+  }
+
+  type AlertChannelHandler = {
+    channelType: number;
+    handlers: string[];
+  }
 }

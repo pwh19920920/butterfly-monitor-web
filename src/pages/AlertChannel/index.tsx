@@ -1,44 +1,44 @@
-import {Button, Drawer, Image, message} from 'antd';
-import React, {useRef, useState} from 'react';
+import {Button, Drawer, message} from 'antd';
+import React, {useEffect, useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {PlusOutlined} from "@ant-design/icons";
 import {FormattedMessage} from "@@/plugin-locale/localeExports";
 import ProDescriptions, {ProDescriptionsItemProps} from "@ant-design/pro-descriptions";
-import {ModalForm} from "@ant-design/pro-form";
-import CreateOrUpdateForm from "@/pages/AlertGroup/components/UpdateForm";
+import {ModalForm, ProFormInstance} from "@ant-design/pro-form";
+import CreateOrUpdateForm from "@/pages/AlertChannel/components/UpdateForm";
 import {
-  alertGroupCreate,
-  alertGroupQuery,
-  alertGroupUpdate,
-  alertGroupUserQueryByGroupId
-} from "@/services/ant-design-pro/alert.group";
-import {sysUserQueryAll} from "@/services/ant-design-pro/sys.user";
+  alertChannelCreate,
+  alertChannelHandlers,
+  alertChannelQuery,
+  alertChannelUpdate
+} from "@/services/ant-design-pro/alert.channel";
+import {AlertChannelFailRouteEnum, AlertChannelTypeEnum} from "@/services/ant-design-pro/enum";
 
-const handleCreate = async (fields: API.AlertGroup) => {
+const handleCreate = async (fields: API.AlertChannel) => {
   const hide = message.loading('正在添加');
   try {
-    await alertGroupCreate({...fields});
+    await alertChannelCreate({...fields});
     hide();
-    message.success('保存分组成功');
+    message.success('保存渠道成功');
     return true;
   } catch (error) {
     hide();
-    message.error('保存分组失败!');
+    message.error('保存渠道失败!');
     return false;
   }
 };
 
-const handleUpdate = async (fields: API.AlertGroup) => {
+const handleUpdate = async (fields: API.AlertChannel) => {
   const hide = message.loading('正在添加');
   try {
-    await alertGroupUpdate({...fields});
+    await alertChannelUpdate({...fields});
     hide();
-    message.success('更新分组成功');
+    message.success('更新渠道成功');
     return true;
   } catch (error) {
     hide();
-    message.error('更新分组失败!');
+    message.error('更新渠道失败!');
     return false;
   }
 };
@@ -50,31 +50,33 @@ const TableList: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
   const drawRef = useRef<ActionType>();
-
+  const createFormRef = useRef<ProFormInstance<API.AlertChannel>>();
+  const updateFormRef = useRef<ProFormInstance<API.AlertChannel>>();
 
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [currentRow, setCurrentRow] = useState<API.AlertGroup>();
-  const [users, setUsers] = useState<API.SysUser[]>();
+  const [currentRow, setCurrentRow] = useState<API.AlertChannel>();
+  const [channelHandlers, setChannelHandlers] = useState<API.AlertChannelHandler[]>([]);
 
-  const columns: ProColumns<API.AlertGroup>[] = [
+  const loadHandlers = async () => {
+    const resp = await alertChannelHandlers()
+    if (resp.data) {
+      setChannelHandlers(resp.data);
+    }
+  }
+
+  useEffect(() => {
+    loadHandlers().then(()=>{});
+  }, []);
+
+  const columns: ProColumns<API.AlertChannel>[] = [
     {
-      title: '分组名',
+      title: '渠道名称',
       dataIndex: 'name',
       hideInSearch: true,
       render: (dom, entity) => {
         return (
           <a
             onClick={async () => {
-              // 设置已选择得用户
-              const resp: API.Resp<string[]> = await alertGroupUserQueryByGroupId(entity.id);
-              const user = await sysUserQueryAll();
-              if (resp.data && resp.data.length > 0) {
-                setUsers(user?.data.filter(item => resp.data.includes(`${item.id}`)))
-                setCurrentRow({...entity, groupUsers: resp.data});
-                setShowDetail(true);
-                return
-              }
-
               setCurrentRow(entity);
               setShowDetail(true);
             }}
@@ -83,6 +85,20 @@ const TableList: React.FC = () => {
           </a>
         );
       },
+    },{
+      title: '渠道类型',
+      dataIndex: 'type',
+      hideInSearch: true,
+      valueEnum: AlertChannelTypeEnum
+    },{
+      title: '渠道处理器',
+      dataIndex: 'handler',
+      hideInSearch: true,
+    },{
+      title: '失败路由',
+      dataIndex: 'failRoute',
+      hideInSearch: true,
+      valueEnum: AlertChannelFailRouteEnum
     },
     {
       title: '操作',
@@ -92,14 +108,6 @@ const TableList: React.FC = () => {
         <a
           key="config"
           onClick={async () => {
-            // 设置已选择得用户
-            const resp: API.Resp<string[]> = await alertGroupUserQueryByGroupId(record.id);
-            if (resp.data && resp.data.length > 0) {
-              setCurrentRow({...record, groupUsers: resp.data});
-              handleModifyModalVisible(true);
-              return
-            }
-
             setCurrentRow(record);
             handleModifyModalVisible(true);
           }}
@@ -110,28 +118,9 @@ const TableList: React.FC = () => {
     },
   ];
 
-  const userColumns: ProColumns<API.SysUser>[] = [
-    {
-      title: '名称',
-      dataIndex: 'name',
-    },
-    {
-      title: '用户名',
-      dataIndex: 'username',
-    },
-    {
-      title: '头像',
-      dataIndex: 'avatar',
-      hideInSearch: true,
-      render: (_, entity) => {
-        return <Image width={20} src={entity.avatar ? entity.avatar : "https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png"} />;
-      },
-    }
-  ];
-
   return (
     <PageContainer>
-      <ProTable<API.AlertGroup, API.PageParams>
+      <ProTable<API.AlertChannel, API.PageParams>
         headerTitle="查询表格"
         actionRef={actionRef}
         rowKey="id"
@@ -147,7 +136,7 @@ const TableList: React.FC = () => {
             <PlusOutlined/> <FormattedMessage id="pages.searchTable.new" defaultMessage="New"/>
           </Button>,
         ]}
-        request={alertGroupQuery}
+        request={alertChannelQuery}
         columns={columns}
         rowSelection={{}}
       />
@@ -164,7 +153,7 @@ const TableList: React.FC = () => {
       >
         {currentRow?.name && (
           <>
-            <ProDescriptions<API.AlertGroup>
+            <ProDescriptions<API.AlertChannel>
               actionRef={drawRef}
               column={2}
               title={currentRow?.name}
@@ -174,29 +163,25 @@ const TableList: React.FC = () => {
               params={{
                 id: currentRow?.name,
               }}
-              columns={columns as ProDescriptionsItemProps<API.AlertGroup>[]}
-            />
-
-            <ProTable<API.SysUser>
-              headerTitle="查询表格"
-              rowKey="id"
-              search={false}
-              toolBarRender={false}
-              dataSource={users}
-              columns={userColumns}
-              rowSelection={false}
+              columns={columns as ProDescriptionsItemProps<API.AlertChannel>[]}
             />
           </>
         )}
       </Drawer>
 
-      <ModalForm
-        title="创建分组"
-        width="340px"
+      {createModalVisible && <ModalForm
+        title="创建渠道"
+        width="740px"
         visible={createModalVisible}
+        formRef={updateFormRef}
         onVisibleChange={handleCreateModalVisible}
-        onFinish={async (value: API.AlertGroup) => {
-          const success = await handleCreate({...value});
+        submitter={{
+          searchConfig: {
+            submitText: '测试并保存',
+          },
+        }}
+        onFinish={async (value: API.AlertChannel) => {
+          const success = await handleCreate({...value, params: JSON.stringify(value.paramsObj)});
           if (success) {
             handleCreateModalVisible(false);
             if (actionRef.current) {
@@ -205,18 +190,24 @@ const TableList: React.FC = () => {
           }
         }}
       >
-        <CreateOrUpdateForm/>
-      </ModalForm>
+        <CreateOrUpdateForm  formRef={updateFormRef} channelHandlers={channelHandlers} channelType={-1}/>
+      </ModalForm>}
 
       {modifyModalVisible && currentRow ? (
         <ModalForm
-          title={'更新分组'}
-          width="340px"
-          initialValues={currentRow}
+          title={'更新渠道'}
+          width="740px"
+          initialValues={{...currentRow, paramsObj: JSON.parse(currentRow.params)}}
+          formRef={createFormRef}
           visible={modifyModalVisible}
           onVisibleChange={handleModifyModalVisible}
-          onFinish={async (value: API.AlertGroup) => {
-            const success = await handleUpdate({...currentRow, ...value});
+          submitter={{
+            searchConfig: {
+              submitText: '测试并更新',
+            },
+          }}
+          onFinish={async (value: API.AlertChannel) => {
+            const success = await handleUpdate({...currentRow, ...value, params: JSON.stringify(value.paramsObj)});
             if (success) {
               handleModifyModalVisible(false);
               if (actionRef.current) {
@@ -226,7 +217,7 @@ const TableList: React.FC = () => {
             }
           }}
         >
-          <CreateOrUpdateForm/>
+          <CreateOrUpdateForm formRef={createFormRef} channelHandlers={channelHandlers} channelType={currentRow.type}/>
         </ModalForm>
       ) : (
         <></>
