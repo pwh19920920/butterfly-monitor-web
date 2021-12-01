@@ -47,25 +47,33 @@
         access: 'routeAccess',
         path: '/monitor/dashboard',
         component: './MonitorDashboard/index',
-      },
+      }
+    ],
+  },
+  {
+    path: '/alert',
+    name: 'alert',
+    icon: 'smile',
+    access: 'routeAccess',
+    routes: [
       {
         name: 'alertConf',
         access: 'routeAccess',
-        path: '/monitor/alertConf',
-          component: './AlertConf/index',
+        path: '/alert/alertConf',
+        component: './AlertConf/index',
       },
       {
         name: 'alertGroup',
         access: 'routeAccess',
-        path: '/monitor/alertGroup',
+        path: '/alert/alertGroup',
         component: './AlertGroup/index',
       },
       {
         name: 'alertChannel',
         access: 'routeAccess',
-        path: '/monitor/alertChannel',
+        path: '/alert/alertChannel',
         component: './AlertChannel/index',
-      }
+      },
     ],
   },
   {

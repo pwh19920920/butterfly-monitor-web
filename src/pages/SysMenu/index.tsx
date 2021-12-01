@@ -252,6 +252,16 @@ const TableList: React.FC = () => {
               return;
             }
 
+            // 检查自己是不是塞到儿子下面了
+            if (currentRow.children) {
+              for (let i = 0; i < currentRow.children.length; i++) {
+                if (currentRow.children[i].id === value.parent) {
+                  message.error('上级菜单不能是本菜单下的子菜单!');
+                  return;
+                }
+              }
+            }
+
             const success = await handleUpdate({ ...currentRow, ...value });
             if (success) {
               handleModifyModalVisible(false);
