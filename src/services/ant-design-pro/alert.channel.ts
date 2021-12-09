@@ -14,7 +14,14 @@ export async function alertChannelQuery(params: API.PageParams, options?: Record
 /** 获取列表 GET /api/alert/channel/handlers */
 export async function alertChannelHandlers() {
   return request<API.Resp<API.AlertChannelHandler[]>>('/api/alert/channel/handlers', {
-    method: 'GET'
+    method: 'GET',
+  });
+}
+
+/** 获取列表 GET /api/alert/channel/all */
+export async function alertChannelQueryAll() {
+  return request<API.Resp<API.AlertChannel[]>>('/api/alert/channel/all', {
+    method: 'GET',
   });
 }
 

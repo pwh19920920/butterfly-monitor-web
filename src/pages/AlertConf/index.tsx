@@ -1,14 +1,18 @@
-import {Button, Drawer, message} from 'antd';
-import React, {useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
-import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
-import {AlertConfTypeEnum} from "@/services/ant-design-pro/enum";
-import {PlusOutlined} from "@ant-design/icons";
-import {FormattedMessage} from "@@/plugin-locale/localeExports";
-import ProDescriptions, {ProDescriptionsItemProps} from "@ant-design/pro-descriptions";
-import {alertConfCreate, alertConfQuery, alertConfUpdate} from "@/services/ant-design-pro/alert.conf";
-import {ModalForm} from "@ant-design/pro-form";
-import CreateOrUpdateForm from "@/pages/AlertConf/components/UpdateForm";
+import { Button, Drawer, message } from 'antd';
+import React, { useRef, useState } from 'react';
+import { PageContainer } from '@ant-design/pro-layout';
+import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
+import { AlertConfTypeEnum } from '@/services/ant-design-pro/enum';
+import { PlusOutlined } from '@ant-design/icons';
+import { FormattedMessage } from '@@/plugin-locale/localeExports';
+import ProDescriptions, { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
+import {
+  alertConfCreate,
+  alertConfQuery,
+  alertConfUpdate,
+} from '@/services/ant-design-pro/alert.conf';
+import { ModalForm } from '@ant-design/pro-form';
+import CreateOrUpdateForm from '@/pages/AlertConf/components/UpdateForm';
 
 const handleCreate = async (fields: API.AlertConf) => {
   const hide = message.loading('正在添加');
@@ -39,7 +43,6 @@ const handleUpdate = async (fields: API.AlertConf) => {
 };
 
 const TableList: React.FC = () => {
-
   const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
   const [modifyModalVisible, handleModifyModalVisible] = useState<boolean>(false);
 
@@ -81,7 +84,7 @@ const TableList: React.FC = () => {
       title: '配置类型',
       dataIndex: 'confType',
       valueEnum: AlertConfTypeEnum,
-      hideInSearch: true
+      hideInSearch: true,
     },
     {
       title: '操作',
@@ -150,7 +153,7 @@ const TableList: React.FC = () => {
 
       <ModalForm
         title="创建配置"
-        width="340px"
+        width="740px"
         visible={createModalVisible}
         onVisibleChange={handleCreateModalVisible}
         onFinish={async (value: API.AlertConf) => {
@@ -163,18 +166,22 @@ const TableList: React.FC = () => {
           }
         }}
       >
-        <CreateOrUpdateForm confType={-1}/>
+        <CreateOrUpdateForm confType={-1} />
       </ModalForm>
 
       {modifyModalVisible && currentRow ? (
         <ModalForm
           title={'更新配置'}
-          width="340px"
+          width="740px"
           initialValues={currentRow}
           visible={modifyModalVisible}
           onVisibleChange={handleModifyModalVisible}
           onFinish={async (value: API.AlertConf) => {
-            const success = await handleUpdate({ ...currentRow, ...value, confVal: `${value.confVal}` });
+            const success = await handleUpdate({
+              ...currentRow,
+              ...value,
+              confVal: `${value.confVal}`,
+            });
             if (success) {
               handleModifyModalVisible(false);
               if (actionRef.current) {
@@ -183,7 +190,7 @@ const TableList: React.FC = () => {
             }
           }}
         >
-          <CreateOrUpdateForm confType={currentRow.confType}/>
+          <CreateOrUpdateForm confType={currentRow.confType} />
         </ModalForm>
       ) : (
         <></>

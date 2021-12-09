@@ -137,6 +137,7 @@ declare namespace API {
     taskExecParams: {
       databaseId: string;
     };
+    taskAlert: TaskAlert;
   };
 
   type MonitorDashboard = {
@@ -145,7 +146,7 @@ declare namespace API {
     slug?: string;
     url?: string;
     uid?: string;
-  }
+  };
 
   type MonitorDashboardTask = {
     id: string;
@@ -154,7 +155,7 @@ declare namespace API {
     taskName: string;
     taskKey: string;
     sort: number;
-  }
+  };
 
   type AlertConf = {
     id: string;
@@ -162,13 +163,13 @@ declare namespace API {
     confVal: string;
     confDesc: string;
     confType: number;
-  }
+  };
 
   type AlertGroup = {
     id: string;
     name: string;
     groupUsers: string[];
-  }
+  };
 
   type AlertChannel = {
     id: string;
@@ -178,10 +179,32 @@ declare namespace API {
     paramsObj: any;
     handler: string;
     failRoute: number;
-  }
+  };
 
   type AlertChannelHandler = {
     channelType: number;
     handlers: string[];
-  }
+  };
+
+  type TaskAlert = {
+    alertChannels: string[];
+    alertGroups: string[];
+    effectTimes: string[];
+    effectTime: string;
+    timeSpan: number;
+    duration: number;
+    checkParams: TaskAlertParams[];
+  };
+
+  type TaskAlertParams = {
+    relation: number;
+    effectTimes: string[];
+    rules: TaskAlertRule[];
+  };
+
+  type TaskAlertRule = {
+    valueType: number;
+    value: number;
+    compareType: number;
+  };
 }

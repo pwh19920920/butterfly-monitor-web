@@ -1,29 +1,30 @@
-import {PlusOutlined} from '@ant-design/icons';
-import {Button, Divider, Drawer, message} from 'antd';
-import React, {useRef, useState} from 'react';
-import {FormattedMessage} from 'umi';
-import {PageContainer} from '@ant-design/pro-layout';
-import type {ActionType, ProColumns} from '@ant-design/pro-table';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Divider, Drawer, message } from 'antd';
+import React, { useRef, useState } from 'react';
+import { FormattedMessage } from 'umi';
+import { PageContainer } from '@ant-design/pro-layout';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import type {ProDescriptionsItemProps} from '@ant-design/pro-descriptions';
+import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import {ModalForm, ProFormDateTimeRangePicker} from '@ant-design/pro-form';
+import { ModalForm, ProFormDateTimeRangePicker } from '@ant-design/pro-form';
 import CreateOrUpdateForm from '@/pages/MonitorTask/components/UpdateForm';
-import {TaskTypeEnum} from '@/services/ant-design-pro/enum';
+import { TaskTypeEnum } from '@/services/ant-design-pro/enum';
 import {
-  monitorTaskCreate, monitorTaskExecForTimeRange,
+  monitorTaskCreate,
+  monitorTaskExecForTimeRange,
   monitorTaskModifyAlertStatus,
   monitorTaskModifySampled,
   monitorTaskModifyTaskStatus,
   monitorTaskQuery,
   monitorTaskUpdate,
 } from '@/services/ant-design-pro/monitor.task';
-import moment from "moment";
+import moment from 'moment';
 
 const handleCreate = async (fields: API.MonitorTask) => {
   const hide = message.loading('正在添加');
   try {
-    await monitorTaskCreate({...fields});
+    await monitorTaskCreate({ ...fields });
     hide();
     message.success('保存任务成功');
     return true;
@@ -42,7 +43,7 @@ const handleCreate = async (fields: API.MonitorTask) => {
 const handleUpdate = async (fields: API.MonitorTask) => {
   const hide = message.loading('正在添加');
   try {
-    await monitorTaskUpdate({...fields});
+    await monitorTaskUpdate({ ...fields });
     hide();
     message.success('更新任务成功');
     return true;
@@ -107,7 +108,7 @@ const handleTaskExecForTimeRange = async (id: string, data: any) => {
     message.error('回溯状态失败!');
     return false;
   }
-}
+};
 
 const TableList: React.FC = () => {
   /**
@@ -210,10 +211,7 @@ const TableList: React.FC = () => {
         <a
           key="sampled"
           onClick={async () => {
-            const success = await handleModifySampled(
-              record.id,
-              record.sampled === 0 ? 1 : 0,
-            );
+            const success = await handleModifySampled(record.id, record.sampled === 0 ? 1 : 0);
             if (success && actionRef.current) {
               actionRef.current.reload();
             }
@@ -222,14 +220,17 @@ const TableList: React.FC = () => {
           {record.sampled === 0 ? '显示' : '隐藏'}样本
         </a>,
 
-        record.recallStatus == 1 && <a
-          key="recallStatus"
-          onClick={() => {
-            handleRecallModalVisible(true);
-            setCurrentRow(record);
-          }}>
-          回溯
-        </a>
+        record.recallStatus == 1 && (
+          <a
+            key="recallStatus"
+            onClick={() => {
+              handleRecallModalVisible(true);
+              setCurrentRow(record);
+            }}
+          >
+            回溯
+          </a>
+        ),
       ],
     },
   ];
@@ -248,7 +249,7 @@ const TableList: React.FC = () => {
               handleModalVisible(true);
             }}
           >
-            <PlusOutlined/> <FormattedMessage id="pages.searchTable.new" defaultMessage="New"/>
+            <PlusOutlined /> <FormattedMessage id="pages.searchTable.new" defaultMessage="New" />
           </Button>,
         ]}
         request={monitorTaskQuery}
@@ -294,7 +295,25 @@ const TableList: React.FC = () => {
           visible={createModalVisible}
           onVisibleChange={handleModalVisible}
           onFinish={async (value: API.MonitorTask) => {
-            const success = await handleCreate({...value});
+            if (!value.taskAlert.checkParams || value.taskAlert.checkParams.length == 0) {
+              message.success('异常检测规则不能为空');
+              return;
+            }
+
+            for (let i = 0; i < value.taskAlert.checkParams.length; i++) {
+              const checkParam = value.taskAlert.checkParams[i];
+              if (!checkParam.rules || checkParam.rules.length == 0) {
+                message.success('异常检测规则不能为空');
+                return;
+              }
+              value.taskAlert.checkParams[i].effectTimes[0] = moment(
+                value.taskAlert.checkParams[i].effectTimes[0],
+              ).format('HH:mm:ss');
+              value.taskAlert.checkParams[i].effectTimes[1] = moment(
+                value.taskAlert.checkParams[i].effectTimes[1],
+              ).format('HH:mm:ss');
+            }
+            const success = await handleCreate({ ...value });
             if (success) {
               handleModalVisible(false);
               if (actionRef.current) {
@@ -303,7 +322,7 @@ const TableList: React.FC = () => {
             }
           }}
         >
-          <CreateOrUpdateForm taskType={-1}/>
+          <CreateOrUpdateForm taskType={-1} />
         </ModalForm>
       )}
 
@@ -311,11 +330,46 @@ const TableList: React.FC = () => {
         <ModalForm
           title={'更新任务'}
           width="740px"
-          initialValues={currentRow}
+          initialValues={{
+            ...currentRow,
+            taskAlert: {
+              ...currentRow.taskAlert,
+              checkParams: currentRow.taskAlert.checkParams
+                ? currentRow.taskAlert.checkParams.map((item) => {
+                    return {
+                      ...item,
+                      effectTimes: [
+                        moment(item.effectTimes[0], 'HH:mm:ss'),
+                        moment(item.effectTimes[1], 'HH:mm:ss'),
+                      ],
+                    };
+                  })
+                : [],
+            },
+          }}
           visible={modifyModalVisible}
           onVisibleChange={handleModifyModalVisible}
           onFinish={async (value: API.MonitorTask) => {
-            const success = await handleUpdate({...currentRow, ...value});
+            if (!value.taskAlert.checkParams || value.taskAlert.checkParams.length == 0) {
+              message.success('异常检测规则不能为空');
+              return;
+            }
+
+            for (let i = 0; i < value.taskAlert.checkParams.length; i++) {
+              const checkParam = value.taskAlert.checkParams[i];
+              if (!checkParam.rules || checkParam.rules.length == 0) {
+                message.success('异常检测规则不能为空');
+                return;
+              }
+              value.taskAlert.checkParams[i].effectTimes[0] = moment(
+                value.taskAlert.checkParams[i].effectTimes[0],
+              ).format('HH:mm:ss');
+              value.taskAlert.checkParams[i].effectTimes[1] = moment(
+                value.taskAlert.checkParams[i].effectTimes[1],
+              ).format('HH:mm:ss');
+            }
+
+            const success = await handleUpdate({ ...currentRow, ...value });
             if (success) {
               handleModifyModalVisible(false);
               if (actionRef.current) {
@@ -324,7 +378,7 @@ const TableList: React.FC = () => {
             }
           }}
         >
-          <CreateOrUpdateForm taskType={currentRow.taskType}/>
+          <CreateOrUpdateForm taskType={currentRow.taskType} />
         </ModalForm>
       ) : (
         <></>
@@ -342,12 +396,12 @@ const TableList: React.FC = () => {
             const endTime = value.timeRange[1];
             await handleTaskExecForTimeRange(currentRow.id, {
               beginDate: startTime,
-              endDate: endTime
+              endDate: endTime,
             });
           }}
         >
           注意：回溯可能会导致数据、图形变更, 谨慎操作
-          <Divider/>
+          <Divider />
           <ProFormDateTimeRangePicker
             name="timeRange"
             rules={[
@@ -358,18 +412,20 @@ const TableList: React.FC = () => {
             ]}
             fieldProps={{
               showTime: true,
-              format: "YYYY-MM-DD HH:mm:ss",
+              format: 'YYYY-MM-DD HH:mm:ss',
               ranges: {
                 今日: [moment().startOf('day'), moment()],
                 一周: [moment().subtract(7, 'd'), moment()],
               },
               disabledDate: (current) => {
                 return current > moment() || moment().subtract(7, 'd') > current;
-              }
+              },
             }}
           />
         </ModalForm>
-      ) : (<></>)}
+      ) : (
+        <></>
+      )}
     </PageContainer>
   );
 };
