@@ -66,7 +66,14 @@ const CheckParamValueTypeEnum = {
   2: '绝对值',
 };
 
+const MonitorTaskAlertStatusEnum = {
+  1: '正常',
+  2: '异常',
+  3: '告警',
+};
+
 export {
+  MonitorTaskAlertStatusEnum,
   CheckParamRelationEnum,
   CheckParamCompareTypeEnum,
   CheckParamValueTypeEnum,

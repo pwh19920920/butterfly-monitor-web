@@ -9,7 +9,7 @@ import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { ModalForm, ProFormDateTimeRangePicker } from '@ant-design/pro-form';
 import CreateOrUpdateForm from '@/pages/MonitorTask/components/UpdateForm';
-import { TaskTypeEnum } from '@/services/ant-design-pro/enum';
+import {MonitorTaskAlertStatusEnum, TaskTypeEnum} from '@/services/ant-design-pro/enum';
 import {
   monitorTaskCreate,
   monitorTaskExecForTimeRange,
@@ -128,6 +128,7 @@ const TableList: React.FC = () => {
     {
       title: '任务名称',
       dataIndex: 'taskName',
+      ellipsis: true,
       render: (dom, entity) => {
         return (
           <a
@@ -144,11 +145,18 @@ const TableList: React.FC = () => {
     {
       title: '任务key',
       dataIndex: 'taskKey',
+      hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '任务类型',
       dataIndex: 'taskType',
       valueEnum: TaskTypeEnum,
+    },
+    {
+      title: '报警状态',
+      dataIndex: ['taskAlert', 'alertStatus'],
+      valueEnum: MonitorTaskAlertStatusEnum,
     },
     {
       title: '上一次执行时间',
@@ -160,12 +168,12 @@ const TableList: React.FC = () => {
       dataIndex: 'collectErrMsg',
       hideInSearch: true,
       ellipsis: true,
-      copyable: true,
     },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      fixed: 'right',
       width: 350,
       render: (_, record) => [
         <a
@@ -253,6 +261,7 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         request={monitorTaskQuery}
+        scroll={{ x: 1300 }}
         columns={columns}
         rowSelection={
           {
