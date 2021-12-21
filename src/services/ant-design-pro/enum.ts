@@ -72,7 +72,15 @@ const MonitorTaskAlertStatusEnum = {
   3: '告警',
 };
 
+const MonitorTaskEventDealStatus = {
+  1: '等待处理',
+  2: '处理中',
+  3: '处理完成',
+  4: '事件忽略',
+};
+
 export {
+  MonitorTaskEventDealStatus,
   MonitorTaskAlertStatusEnum,
   CheckParamRelationEnum,
   CheckParamCompareTypeEnum,

@@ -9,7 +9,7 @@ import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { ModalForm, ProFormDateTimeRangePicker } from '@ant-design/pro-form';
 import CreateOrUpdateForm from '@/pages/MonitorTask/components/UpdateForm';
-import {MonitorTaskAlertStatusEnum, TaskTypeEnum} from '@/services/ant-design-pro/enum';
+import { MonitorTaskAlertStatusEnum, TaskTypeEnum } from '@/services/ant-design-pro/enum';
 import {
   monitorTaskCreate,
   monitorTaskExecForTimeRange,
@@ -157,6 +157,7 @@ const TableList: React.FC = () => {
       title: '报警状态',
       dataIndex: ['taskAlert', 'alertStatus'],
       valueEnum: MonitorTaskAlertStatusEnum,
+      hideInSearch: true,
     },
     {
       title: '上一次执行时间',

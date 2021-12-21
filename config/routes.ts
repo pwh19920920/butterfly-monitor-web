@@ -47,7 +47,13 @@
         access: 'routeAccess',
         path: '/monitor/dashboard',
         component: './MonitorDashboard/index',
-      }
+      },
+      {
+        name: 'monitorTaskEvent',
+        access: 'routeAccess',
+        path: '/monitor/taskEvent',
+        component: './MonitorTaskEvent/index',
+      },
     ],
   },
   {

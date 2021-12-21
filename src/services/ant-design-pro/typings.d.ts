@@ -207,4 +207,20 @@ declare namespace API {
     value: number;
     compareType: number;
   };
+
+  type MonitorTaskEvent = {
+    id: string;
+    alertId: string;
+    taskId: string;
+    taskName: string;
+    alertMsg: string; // 报警信息
+    dealTime: string; // 处理时间
+    completeTime: string; // 完成时间
+    content: string; // 过程描述
+    dealStatus: number; // 处理状态
+    dealUser: string; // 处理人ID
+    dealUserName: string; // 处理人, 只显示名字, 此值只做展示用
+    preAlertTime: string; // 前一次报警时间
+    nextAlertTime: string; // 下一次报警时间
+  };
 }

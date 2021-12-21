@@ -54,6 +54,7 @@ export default {
   'menu.monitor.monitorDatabase': '数据源管理',
   'menu.monitor.monitorTask': '任务管理',
   'menu.monitor.monitorDashboard': '面板管理',
+  'menu.monitor.monitorTaskEvent': '异常事件',
   'menu.alert': '报警管理',
   'menu.alert.alertConf': '报警配置',
   'menu.alert.alertGroup': '用户分组',
