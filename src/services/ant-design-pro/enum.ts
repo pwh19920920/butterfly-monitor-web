@@ -49,11 +49,11 @@ const AlertChannelSSlEnum = {
 };
 
 const CheckParamCompareTypeEnum = {
-  1: '超出样本阈值',
-  2: '低于样本阈值',
-  3: '等于样本阈值',
-  4: '超出或等于样本阈值',
-  5: '低于或等于样本阈值',
+  1: '超出',
+  2: '低于',
+  3: '等于',
+  4: '超出',
+  5: '低于',
 };
 
 const CheckParamRelationEnum = {
@@ -62,7 +62,7 @@ const CheckParamRelationEnum = {
 };
 
 const CheckParamValueTypeEnum = {
-  1: '百分比',
+  1: '样本阈值百分比',
   2: '绝对值',
 };
 
