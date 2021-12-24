@@ -111,6 +111,11 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '发生时间',
+      dataIndex: 'createdAt',
+      hideInSearch: true,
+    },
+    {
       title: '完成时间',
       dataIndex: 'completeTime',
       hideInSearch: true,

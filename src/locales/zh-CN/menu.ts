@@ -51,7 +51,7 @@ export default {
   'menu.editor.koni': '拓扑编辑器',
 
   'menu.monitor': '监控管理',
-  'menu.monitor.monitorDatabase': '数据源管理',
+  'menu.monitor.monitorDatabase': '数据管理',
   'menu.monitor.monitorTask': '任务管理',
   'menu.monitor.monitorDashboard': '面板管理',
   'menu.monitor.monitorTaskEvent': '异常事件',
