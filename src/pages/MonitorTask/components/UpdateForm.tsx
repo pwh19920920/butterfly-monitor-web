@@ -22,6 +22,7 @@ import { alertChannelQueryAll } from '@/services/ant-design-pro/alert.channel';
 import { alertGroupQueryAll } from '@/services/ant-design-pro/alert.group';
 import moment from 'moment';
 import ProCard from '@ant-design/pro-card';
+import {JSONObject} from "puppeteer-core";
 
 const taskTypes = Object.keys(TaskTypeEnum).map((item) => {
   return {
@@ -61,16 +62,20 @@ const valueTypes = Object.keys(CheckParamValueTypeEnum).map((item) => {
 type MonitorDatabaseItem = {
   label: string;
   value: string;
+  type?: number;
 };
 
 type CreateOrUpdateFormProps = {
   taskType: number;
+  exeParams: JSONObject;
 };
 
 const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUpdateFormProps) => {
   const isCreateView = props.taskType === -1;
   const [selectTaskType, setSelectTaskType] = useState<number>(props.taskType);
   const [databases, setDatabases] = useState<MonitorDatabaseItem[]>([]);
+  const [databaseTypeMap, setDatabaseTypeMap] = useState<Map<string, number>>(new Map<string, number>());
+  const [databaseType, setDatabaseType] = useState<number>();
   const [dashboards, setDashboards] = useState<MonitorDatabaseItem[]>([]);
   const [alertChannels, setAlertChannels] = useState<MonitorDatabaseItem[]>([]);
   const [alertGroups, setAlertGroups] = useState<MonitorDatabaseItem[]>([]);
@@ -80,7 +85,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
     if (resp.data && resp.data.length > 0) {
       return Promise.resolve(
         resp.data.map((item: API.MonitorDatabase): MonitorDatabaseItem => {
-          return { label: item.name, value: `${item.id}` };
+          return { label: item.name, value: `${item.id}`, type: item.type };
         }),
       );
     }
@@ -128,6 +133,20 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
     reloadData()
       .then((resp) => {
         setDatabases(resp);
+
+        // 设置
+        const map = new Map<string, number>();
+        resp.forEach(item => {
+          if (item.type != null) {
+            map.set(item.value, item.type)
+          }
+        })
+        setDatabaseTypeMap(map);
+
+        // 设置默认的dataBaseType
+        if (props.exeParams?.databaseId) {
+          setDatabaseType(map.get(props.exeParams.databaseId as string));
+        }
       })
       .catch(() => {});
 
@@ -318,6 +337,15 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
             width="md"
             fieldProps={{
               showSearch: true,
+              onChange: (value: string) => {
+                if (!value) {
+                  setDatabaseType(-1);
+                  return
+                }
+
+                const type = databaseTypeMap.get(value);
+                setDatabaseType(type);
+              },
             }}
             name={['taskExecParams', 'databaseId']}
             placeholder="请选择数据库"
@@ -325,7 +353,8 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           />
         )}
 
-        {selectTaskType == 2 && (
+        {/*当为2http时，或者为1sql + mongodb*/}
+        {(selectTaskType == 2 || selectTaskType == 1 && databaseType == 1) && (
           <ProFormText
             label="提取字段"
             rules={[
@@ -337,6 +366,21 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
             width="md"
             placeholder="结果字段, 支持复杂参数, 对象.属性"
             name={['taskExecParams', 'resultFieldPath']}
+          />
+        )}
+
+        {selectTaskType == 1 && databaseType == 1 && (
+          <ProFormText
+            label="mongo集合名称"
+            rules={[
+              {
+                required: true,
+                message: 'mongo集合名称不能为空',
+              },
+            ]}
+            width="md"
+            placeholder="mongo集合名称"
+            name={['taskExecParams', 'collectName']}
           />
         )}
       </ProForm.Group>

@@ -332,7 +332,7 @@ const TableList: React.FC = () => {
             }
           }}
         >
-          <CreateOrUpdateForm taskType={-1} />
+          <CreateOrUpdateForm taskType={-1} exeParams={JSON.parse("{}")}/>
         </ModalForm>
       )}
 
@@ -388,7 +388,7 @@ const TableList: React.FC = () => {
             }
           }}
         >
-          <CreateOrUpdateForm taskType={currentRow.taskType} />
+          <CreateOrUpdateForm taskType={currentRow.taskType}  exeParams={JSON.parse(currentRow.execParams)}/>
         </ModalForm>
       ) : (
         <></>
