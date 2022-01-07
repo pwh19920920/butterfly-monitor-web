@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import ProForm, {
   ProFormDigit,
   ProFormList,
@@ -14,12 +14,12 @@ import {
   TaskRecallStatusEnum,
   TaskTypeEnum,
 } from '@/services/ant-design-pro/enum';
-import { Col, Divider, Modal, Row, Spin } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
-import { monitorDatabaseQueryAll } from '@/services/ant-design-pro/monitor.database';
-import { monitorDashboardQueryAll } from '@/services/ant-design-pro/monitor.dashboard';
-import { alertChannelQueryAll } from '@/services/ant-design-pro/alert.channel';
-import { alertGroupQueryAll } from '@/services/ant-design-pro/alert.group';
+import {Col, Divider, Modal, Row, Spin} from 'antd';
+import {LoadingOutlined} from '@ant-design/icons';
+import {monitorDatabaseQueryAll} from '@/services/ant-design-pro/monitor.database';
+import {monitorDashboardQueryAll} from '@/services/ant-design-pro/monitor.dashboard';
+import {alertChannelQueryAll} from '@/services/ant-design-pro/alert.channel';
+import {alertGroupQueryAll} from '@/services/ant-design-pro/alert.group';
 import moment from 'moment';
 import ProCard from '@ant-design/pro-card';
 import {JSONObject} from "puppeteer-core";
@@ -85,7 +85,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
     if (resp.data && resp.data.length > 0) {
       return Promise.resolve(
         resp.data.map((item: API.MonitorDatabase): MonitorDatabaseItem => {
-          return { label: item.name, value: `${item.id}`, type: item.type };
+          return {label: item.name, value: `${item.id}`, type: item.type};
         }),
       );
     }
@@ -97,7 +97,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
     if (resp.data && resp.data.length > 0) {
       return Promise.resolve(
         resp.data.map((item: API.MonitorDashboard): MonitorDatabaseItem => {
-          return { label: item.name, value: `${item.id}` };
+          return {label: item.name, value: `${item.id}`};
         }),
       );
     }
@@ -109,7 +109,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
     if (resp.data && resp.data.length > 0) {
       return Promise.resolve(
         resp.data.map((item: API.AlertChannel): MonitorDatabaseItem => {
-          return { label: item.name, value: `${item.id}` };
+          return {label: item.name, value: `${item.id}`};
         }),
       );
     }
@@ -121,7 +121,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
     if (resp.data && resp.data.length > 0) {
       return Promise.resolve(
         resp.data.map((item: API.AlertGroup): MonitorDatabaseItem => {
-          return { label: item.name, value: `${item.id}` };
+          return {label: item.name, value: `${item.id}`};
         }),
       );
     }
@@ -148,7 +148,8 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           setDatabaseType(map.get(props.exeParams.databaseId as string));
         }
       })
-      .catch(() => {});
+      .catch(() => {
+      });
 
     // grafana面板
     loadDashboard()
@@ -209,7 +210,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
   }, []);
 
   if (dashboards.length == 0) {
-    return <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />;
+    return <Spin indicator={<LoadingOutlined style={{fontSize: 24}} spin/>}/>;
   }
 
   return (
@@ -260,7 +261,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           ]}
           min={30}
           width="md"
-          fieldProps={{ step: 30 }}
+          fieldProps={{step: 30}}
           placeholder="请输入任务执行周期, 30s为周期"
           name="timeSpan"
         />
@@ -383,6 +384,30 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
             name={['taskExecParams', 'collectName']}
           />
         )}
+
+        {selectTaskType == 1 && databaseType == 1 && (
+          <ProFormDigit
+            label="无结果默认值"
+            rules={[
+              {
+                required: true,
+                message: '无结果默认值不能为空',
+              },
+              ({}) => ({
+                validator(_, value) {
+                  if (value >= 0) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('数字必须>=0'));
+                },
+              }),
+            ]}
+            min={0}
+            width="md"
+            placeholder="无结果默认值，当查询结果为比例时为100, 当为数值是为0"
+            name={['taskExecParams', 'defaultValue']}
+          />
+        )}
       </ProForm.Group>
 
       <ProFormTextArea
@@ -461,7 +486,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
       <Divider>异常检测规则</Divider>
       <ProFormList
         name={['taskAlert', 'checkParams']}
-        itemRender={({ listDom, action }) => {
+        itemRender={({listDom, action}) => {
           return (
             <ProCard
               bordered
