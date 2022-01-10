@@ -243,8 +243,22 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           name="taskKey"
         />
 
+        <ProFormSelect
+          options={dashboards}
+          rules={[
+            {
+              required: true,
+              message: '归属面板不能为空',
+            },
+          ]}
+          mode="multiple"
+          width="md"
+          name="dashboards"
+          label="归属面板"
+        />
+
         <ProFormDigit
-          label="任务执行周期"
+          label="任务执行周期(多久收集一次：单位s)"
           rules={[
             {
               required: true,
@@ -264,6 +278,29 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           fieldProps={{step: 30}}
           placeholder="请输入任务执行周期, 30s为周期"
           name="timeSpan"
+        />
+
+        <ProFormDigit
+          label="跨步间隔(开始时间与当前时间间隔，单位s)"
+          rules={[
+            {
+              required: true,
+              message: '跨步间隔不能为空',
+            },
+            ({}) => ({
+              validator(_, value) {
+                if (value % 30 === 0) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error('跨步间隔必须是30s的倍数'));
+              },
+            }),
+          ]}
+          min={30}
+          width="md"
+          fieldProps={{step: 30}}
+          placeholder="请输入跨步间隔, 30s的倍数"
+          name="stepSpan"
         />
 
         <ProFormSelect
@@ -310,20 +347,6 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           }}
           name="taskType"
           label="任务类型"
-        />
-
-        <ProFormSelect
-          options={dashboards}
-          rules={[
-            {
-              required: true,
-              message: '归属面板不能为空',
-            },
-          ]}
-          mode="multiple"
-          width="md"
-          name="dashboards"
-          label="归属面板"
         />
 
         {selectTaskType == 1 && (
@@ -411,7 +434,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
       </ProForm.Group>
 
       <ProFormTextArea
-        label="执行指令"
+        label="执行指令（示例: createTime >= '{{.startTime}}' and createTime < {{.endTime}}）"
         rules={[
           {
             required: true,
@@ -419,6 +442,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           },
         ]}
         name="command"
+        placeholder="支持的特殊参数: startTime(当前时间-跨步间隔)，beginTime(当前时间-检查间隔)，endTime(当前时间)"
       />
 
       <ProForm.Group title="报警检查配置">
@@ -501,8 +525,8 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           );
         }}
       >
-        <Row gutter={24}>
-          <Col span={12}>
+        <Row gutter={23}>
+          <Col span={8}>
             <ProFormSelect
               showSearch
               options={relations}
@@ -517,7 +541,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
               label="条件关系"
             />
           </Col>
-          <Col span={12}>
+          <Col span={8}>
             <ProFormTimePicker.RangePicker
               name="effectTimes"
               rules={[

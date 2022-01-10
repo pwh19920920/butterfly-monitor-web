@@ -339,7 +339,7 @@ const TableList: React.FC = () => {
       {modifyModalVisible && currentRow ? (
         <ModalForm
           title={'更新任务'}
-          width="740px"
+          width="1100px"
           initialValues={{
             ...currentRow,
             taskAlert: {
