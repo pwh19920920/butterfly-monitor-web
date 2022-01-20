@@ -8,7 +8,12 @@ type SysRoleItem = {
   label: string;
   value: string;
 };
-const CreateOrUpdateForm: React.FC = () => {
+
+type CreateOrUpdateFormProps = {
+  isCreate: boolean;
+};
+
+const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUpdateFormProps) => {
   const [roleData, setRoleData] = useState<SysRoleItem[]>([]);
 
   const reloadRoleData = async () => {
@@ -89,6 +94,12 @@ const CreateOrUpdateForm: React.FC = () => {
         <ProFormText
           label="密码"
           width="md"
+          rules={[
+            {
+              required: props.isCreate,
+              message: '密码不能为空',
+            },
+          ]}
           placeholder="新增时必须输入, 修改过程中不修改无需输入"
           name="password"
         />

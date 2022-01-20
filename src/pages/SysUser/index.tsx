@@ -216,7 +216,7 @@ const TableList: React.FC = () => {
           }
         }}
       >
-        <CreateOrUpdateForm />
+        <CreateOrUpdateForm isCreate={true}/>
       </ModalForm>
 
       {modifyModalVisible && currentRow ? (
@@ -236,7 +236,7 @@ const TableList: React.FC = () => {
             }
           }}
         >
-          <CreateOrUpdateForm />
+          <CreateOrUpdateForm isCreate={false}/>
         </ModalForm>
       ) : (
         <></>
