@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import ProForm, {ProFormDigit, ProFormSelect, ProFormText, ProFormTextArea,} from '@ant-design/pro-form';
 import {AlertChannelFailRouteEnum, AlertChannelSSlEnum, AlertChannelTypeEnum} from "@/services/ant-design-pro/enum";
 import {ProFormInstance} from "@ant-design/pro-form/lib/BaseForm";
+import {Spin} from "antd";
+import {LoadingOutlined} from "@ant-design/icons";
 
 type SelectItem = {
   label: string;
@@ -63,6 +65,10 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (prop) => {
     const handlers = handlersMap.get(prop.channelType)
     setSelectChannelHandlers(handlers);
   }, []);
+
+  if (channelHandlerMaps.size == 0) {
+    return <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />;
+  }
 
   return (
     <>
