@@ -53,8 +53,8 @@ const CheckParamCompareTypeEnum = {
   1: '超出',
   2: '低于',
   3: '等于',
-  4: '超出',
-  5: '低于',
+  4: '超出或等于',
+  5: '低于或等于',
 };
 
 const CheckParamRelationEnum = {
