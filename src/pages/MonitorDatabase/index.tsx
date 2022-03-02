@@ -66,6 +66,7 @@ const TableList: React.FC = () => {
     {
       title: '名称',
       dataIndex: 'name',
+      ellipsis: true,
       render: (dom, entity) => {
         return (
           <a
@@ -88,6 +89,7 @@ const TableList: React.FC = () => {
       title: '地址',
       dataIndex: 'url',
       hideInSearch: true,
+      ellipsis: true,
     },
     {
       title: '数据库名',
