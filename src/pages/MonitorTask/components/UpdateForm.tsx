@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import ProForm, {
   ProFormDigit,
   ProFormList,
@@ -14,15 +14,15 @@ import {
   TaskRecallStatusEnum,
   TaskTypeEnum,
 } from '@/services/ant-design-pro/enum';
-import {Col, Divider, Modal, Row, Spin} from 'antd';
-import {LoadingOutlined} from '@ant-design/icons';
-import {monitorDatabaseQueryAll} from '@/services/ant-design-pro/monitor.database';
-import {monitorDashboardQueryAll} from '@/services/ant-design-pro/monitor.dashboard';
-import {alertChannelQueryAll} from '@/services/ant-design-pro/alert.channel';
-import {alertGroupQueryAll} from '@/services/ant-design-pro/alert.group';
+import { Col, Divider, Modal, Row, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+import { monitorDatabaseQueryAll } from '@/services/ant-design-pro/monitor.database';
+import { monitorDashboardQueryAll } from '@/services/ant-design-pro/monitor.dashboard';
+import { alertChannelQueryAll } from '@/services/ant-design-pro/alert.channel';
+import { alertGroupQueryAll } from '@/services/ant-design-pro/alert.group';
 import moment from 'moment';
 import ProCard from '@ant-design/pro-card';
-import {JSONObject} from "puppeteer-core";
+import { JSONObject } from 'puppeteer-core';
 
 const taskTypes = Object.keys(TaskTypeEnum).map((item) => {
   return {
@@ -74,7 +74,9 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
   const isCreateView = props.taskType === -1;
   const [selectTaskType, setSelectTaskType] = useState<number>(props.taskType);
   const [databases, setDatabases] = useState<MonitorDatabaseItem[]>([]);
-  const [databaseTypeMap, setDatabaseTypeMap] = useState<Map<string, number>>(new Map<string, number>());
+  const [databaseTypeMap, setDatabaseTypeMap] = useState<Map<string, number>>(
+    new Map<string, number>(),
+  );
   const [databaseType, setDatabaseType] = useState<number>();
   const [dashboards, setDashboards] = useState<MonitorDatabaseItem[]>([]);
   const [alertChannels, setAlertChannels] = useState<MonitorDatabaseItem[]>([]);
@@ -85,7 +87,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
     if (resp.data && resp.data.length > 0) {
       return Promise.resolve(
         resp.data.map((item: API.MonitorDatabase): MonitorDatabaseItem => {
-          return {label: item.name, value: `${item.id}`, type: item.type};
+          return { label: item.name, value: `${item.id}`, type: item.type };
         }),
       );
     }
@@ -97,7 +99,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
     if (resp.data && resp.data.length > 0) {
       return Promise.resolve(
         resp.data.map((item: API.MonitorDashboard): MonitorDatabaseItem => {
-          return {label: item.name, value: `${item.id}`};
+          return { label: item.name, value: `${item.id}` };
         }),
       );
     }
@@ -109,7 +111,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
     if (resp.data && resp.data.length > 0) {
       return Promise.resolve(
         resp.data.map((item: API.AlertChannel): MonitorDatabaseItem => {
-          return {label: item.name, value: `${item.id}`};
+          return { label: item.name, value: `${item.id}` };
         }),
       );
     }
@@ -121,7 +123,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
     if (resp.data && resp.data.length > 0) {
       return Promise.resolve(
         resp.data.map((item: API.AlertGroup): MonitorDatabaseItem => {
-          return {label: item.name, value: `${item.id}`};
+          return { label: item.name, value: `${item.id}` };
         }),
       );
     }
@@ -136,11 +138,11 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
 
         // 设置
         const map = new Map<string, number>();
-        resp.forEach(item => {
+        resp.forEach((item) => {
           if (item.type != null) {
-            map.set(item.value, item.type)
+            map.set(item.value, item.type);
           }
-        })
+        });
         setDatabaseTypeMap(map);
 
         // 设置默认的dataBaseType
@@ -148,8 +150,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           setDatabaseType(map.get(props.exeParams.databaseId as string));
         }
       })
-      .catch(() => {
-      });
+      .catch(() => {});
 
     // grafana面板
     loadDashboard()
@@ -210,7 +211,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
   }, []);
 
   if (dashboards.length == 0) {
-    return <Spin indicator={<LoadingOutlined style={{fontSize: 24}} spin/>}/>;
+    return <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />;
   }
 
   return (
@@ -275,7 +276,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           ]}
           min={30}
           width="md"
-          fieldProps={{step: 30}}
+          fieldProps={{ step: 30 }}
           placeholder="请输入任务执行周期, 30s为周期"
           name="timeSpan"
         />
@@ -298,7 +299,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           ]}
           min={30}
           width="md"
-          fieldProps={{step: 30}}
+          fieldProps={{ step: 30 }}
           placeholder="请输入跨步间隔, 30s的倍数"
           name="stepSpan"
         />
@@ -364,7 +365,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
               onChange: (value: string) => {
                 if (!value) {
                   setDatabaseType(-1);
-                  return
+                  return;
                 }
 
                 const type = databaseTypeMap.get(value);
@@ -378,7 +379,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
         )}
 
         {/*当为2http时，或者为1sql + mongodb*/}
-        {(selectTaskType == 2 || selectTaskType == 1 && databaseType == 1) && (
+        {(selectTaskType == 2 || (selectTaskType == 1 && databaseType == 1)) && (
           <ProFormText
             label="提取字段"
             rules={[
@@ -434,7 +435,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
       </ProForm.Group>
 
       <ProFormTextArea
-        label="执行指令（示例: createTime >= '{{.startTime}}' and createTime < {{.endTime}}）"
+        label="执行指令（示例: createTime >= '{{.startTime}}' and createTime < '{{.endTime}}'）"
         rules={[
           {
             required: true,
@@ -442,6 +443,14 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           },
         ]}
         name="command"
+        tooltip={
+          <>
+            <p>startTime：endTime - 跨步间隔</p>
+            <p>endTime：任务开始执行得时间</p>
+            <p>startTimeMilli：startTime时间戳格式</p>
+            <p>endTimeMilli：endTime时间戳格式</p>
+          </>
+        }
         placeholder="支持的特殊参数: startTime(当前时间-跨步间隔)，beginTime(当前时间-检查间隔)，endTime(当前时间)"
       />
 
@@ -510,7 +519,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
       <Divider>异常检测规则</Divider>
       <ProFormList
         name={['taskAlert', 'checkParams']}
-        itemRender={({listDom, action}) => {
+        itemRender={({ listDom, action }) => {
           return (
             <ProCard
               bordered
@@ -553,7 +562,7 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
               fieldProps={{
                 showTime: true,
                 format: 'HH:mm:ss',
-                defaultValue: moment().startOf('day'),
+                defaultValue: [moment().startOf('day'), moment().endOf('day')],
               }}
               dataFormat="HH:mm:ss"
               label="生效时间"

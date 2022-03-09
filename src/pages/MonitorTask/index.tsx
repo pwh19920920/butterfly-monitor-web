@@ -129,6 +129,7 @@ const TableList: React.FC = () => {
       title: '任务名称',
       dataIndex: 'taskName',
       ellipsis: true,
+      width: 300,
       render: (dom, entity) => {
         return (
           <a
@@ -332,7 +333,7 @@ const TableList: React.FC = () => {
             }
           }}
         >
-          <CreateOrUpdateForm taskType={-1} exeParams={JSON.parse("{}")}/>
+          <CreateOrUpdateForm taskType={-1} exeParams={JSON.parse('{}')} />
         </ModalForm>
       )}
 
@@ -388,7 +389,10 @@ const TableList: React.FC = () => {
             }
           }}
         >
-          <CreateOrUpdateForm taskType={currentRow.taskType}  exeParams={JSON.parse(currentRow.execParams)}/>
+          <CreateOrUpdateForm
+            taskType={currentRow.taskType}
+            exeParams={JSON.parse(currentRow.execParams)}
+          />
         </ModalForm>
       ) : (
         <></>
