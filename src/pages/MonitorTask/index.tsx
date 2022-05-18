@@ -230,7 +230,7 @@ const TableList: React.FC = () => {
           {record.sampled === 0 ? '显示' : '隐藏'}样本
         </a>,
 
-        record.recallStatus == 1 && (
+        (
           <a
             key="recallStatus"
             onClick={() => {

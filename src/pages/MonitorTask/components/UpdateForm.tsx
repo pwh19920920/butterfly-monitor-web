@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import ProForm, {
   ProFormDigit,
   ProFormList,
@@ -11,30 +11,22 @@ import {
   CheckParamCompareTypeEnum,
   CheckParamRelationEnum,
   CheckParamValueTypeEnum,
-  TaskRecallStatusEnum,
   TaskTypeEnum,
 } from '@/services/ant-design-pro/enum';
-import { Col, Divider, Modal, Row, Spin } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
-import { monitorDatabaseQueryAll } from '@/services/ant-design-pro/monitor.database';
-import { monitorDashboardQueryAll } from '@/services/ant-design-pro/monitor.dashboard';
-import { alertChannelQueryAll } from '@/services/ant-design-pro/alert.channel';
-import { alertGroupQueryAll } from '@/services/ant-design-pro/alert.group';
+import {Col, Divider, Modal, Row, Spin} from 'antd';
+import {LoadingOutlined} from '@ant-design/icons';
+import {monitorDatabaseQueryAll} from '@/services/ant-design-pro/monitor.database';
+import {monitorDashboardQueryAll} from '@/services/ant-design-pro/monitor.dashboard';
+import {alertChannelQueryAll} from '@/services/ant-design-pro/alert.channel';
+import {alertGroupQueryAll} from '@/services/ant-design-pro/alert.group';
 import moment from 'moment';
 import ProCard from '@ant-design/pro-card';
-import { JSONObject } from 'puppeteer-core';
+import {JSONObject} from 'puppeteer-core';
 
 const taskTypes = Object.keys(TaskTypeEnum).map((item) => {
   return {
     value: Number(item),
     label: TaskTypeEnum[item],
-  };
-});
-
-const recallStatus = Object.keys(TaskRecallStatusEnum).map((item) => {
-  return {
-    value: Number(item),
-    label: TaskRecallStatusEnum[item],
   };
 });
 
@@ -302,19 +294,6 @@ const CreateOrUpdateForm: React.FC<CreateOrUpdateFormProps> = (props: CreateOrUp
           fieldProps={{ step: 30 }}
           placeholder="请输入跨步间隔, 30s的倍数"
           name="stepSpan"
-        />
-
-        <ProFormSelect
-          options={recallStatus}
-          rules={[
-            {
-              required: true,
-              message: '回朔支持不能为空',
-            },
-          ]}
-          width="md"
-          name="recallStatus"
-          label="是否支持回朔"
         />
 
         <ProFormSelect
