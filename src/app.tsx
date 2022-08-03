@@ -42,7 +42,7 @@ export async function getInitialState(): Promise<{
     return undefined;
   };
   // 如果是登录页面，不执行
-  if (history.location.pathname !== loginPath) {
+  if (history.location.pathname.indexOf(loginPath) == -1 || localStorage.getItem('token')) {
     const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
@@ -50,6 +50,7 @@ export async function getInitialState(): Promise<{
       settings: {},
     };
   }
+
   return {
     fetchUserInfo,
     settings: {},
@@ -71,10 +72,31 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     },
     footerRender: () => <Footer />,
     onPageChange: () => {
-      const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
+      if (!initialState?.currentUser && history.location.pathname.indexOf(loginPath) == -1) {
+        history.push(`${loginPath}?redirect=${history.location.pathname}`);
+        return;
+      }
+
+      // 如果已经登录
+      if (initialState?.currentUser) {
+        // 已登录就判断是否有redirect
+        const { query } = history.location;
+        const { redirect } = query as { redirect: string };
+
+        if (redirect) {
+          if (redirect.indexOf('://') != -1) {
+            location.href = redirect;
+            return;
+          }
+
+          history.push(redirect || '/');
+          return;
+        }
+
+        // 没有redirect就该怎么样就怎么样
+        history.push(history.location);
+        return;
       }
     },
     links: isDev
@@ -172,7 +194,18 @@ const errorHandler = (error: ResponseError) => {
 
     // 已经退出
     if (response.status === 401) {
-      history.push(loginPath);
+      // 双层嵌套控制
+      const { query } = history.location;
+      const { redirect } = query as { redirect: string };
+      if (redirect) {
+        const search = history.location.search;
+        location.href = `${loginPath}?redirect=${search.substring(10, search.length)}`;
+        localStorage.clear();
+        return;
+      }
+
+      // 非双层嵌套控制
+      location.href = `${loginPath}?redirect=${history.location.pathname}${history.location.search}`;
       localStorage.clear();
     }
   } else if (data) {

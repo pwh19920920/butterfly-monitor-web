@@ -57,7 +57,15 @@ const Login: React.FC = () => {
         if (!history) return;
         const { query } = history.location;
         const { redirect } = query as { redirect: string };
-        history.push(redirect || '/');
+
+        // 不存在就去首页
+        if (!redirect) {
+          history.push(redirect || '/');
+          return;
+        }
+
+        const search = history.location.search;
+        location.href = search.substring(10, search.length);
         return;
       }
 
