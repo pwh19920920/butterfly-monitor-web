@@ -1,12 +1,11 @@
-import React, { useCallback } from 'react';
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Menu, Spin } from 'antd';
-import { history, useModel } from 'umi';
-import { stringify } from 'querystring';
+import React, {useCallback} from 'react';
+import {LogoutOutlined, SettingOutlined, UserOutlined} from '@ant-design/icons';
+import {Avatar, Menu, Spin} from 'antd';
+import {history, useModel} from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
-import { outLogin } from '@/services/ant-design-pro/login';
-import type { MenuInfo } from 'rc-menu/lib/interface';
+import {outLogin} from '@/services/ant-design-pro/login';
+import type {MenuInfo} from 'rc-menu/lib/interface';
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -17,16 +16,14 @@ export type GlobalHeaderRightProps = {
  */
 const loginOut = async () => {
   await outLogin();
-  const { query = {}, pathname } = history.location;
+  const { query = {} } = history.location;
   const { redirect } = query;
   localStorage.clear();
   // Note: There may be security issues, please note
   if (window.location.pathname !== '/user/login' && !redirect) {
     history.replace({
       pathname: '/user/login',
-      search: stringify({
-        redirect: pathname,
-      }),
+      search: `redirect=${window.location.pathname}${history.location.search}`,
     });
   }
 };
