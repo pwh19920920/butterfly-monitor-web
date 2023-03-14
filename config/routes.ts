@@ -126,6 +126,17 @@
     ],
   },
   {
+    path: '/loginToGrafana',
+    hideInMenu: true,
+    flatMenu: false,
+    component: './LoginToGrafana',
+    layout: {
+      hideMenu: true,
+      hideNav: true,
+      hideFooter: true,
+    },
+  },
+  {
     path: '/',
     redirect: '/welcome',
   },

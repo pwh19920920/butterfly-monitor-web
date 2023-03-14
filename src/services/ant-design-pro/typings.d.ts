@@ -223,4 +223,16 @@ declare namespace API {
     preAlertTime: string; // 前一次报警时间
     nextAlertTime: string; // 下一次报警时间
   };
+
+  type SysLoginAuthorizeResponse = {
+    code: string;
+    redirectUrl: string;
+  };
+
+  type MonitorTaskHomeCountResponse = {
+    taskCount: number;
+    eventCount: number;
+    dashboardCount: number;
+    databaseCount: number;
+  }
 }

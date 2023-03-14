@@ -1,6 +1,7 @@
 const DatabaseTypeEnum = {
-  0: 'Mysql',
-  1: 'MongoDB'
+  1: 'MongoDB',
+  2: 'Mysql',
+  3: 'InfluxDB'
 };
 
 const TaskTypeEnum = {

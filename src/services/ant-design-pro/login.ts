@@ -29,3 +29,14 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
     ...(options || {}),
   });
 }
+
+export async function authority(body: any, options?: { [key: string]: any }) {
+  return request<API.Resp<API.SysLoginAuthorizeResponse>>('/api/oauth/authorize', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
